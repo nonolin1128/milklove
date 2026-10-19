@@ -2,7 +2,7 @@
   "name": "milklove",
   "version": "1.0.0",
   "private": true,
-  "description": "曼谷 5 日・ML-FC 行程表",
+  "description": "曼谷 5 日・奶愛FC踩點之旅",
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev-server.mjs",
