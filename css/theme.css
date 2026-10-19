@@ -10,11 +10,16 @@
   --mint:    #CDE5C0;   /* 奶綠 */
   --apricot: #FBDFC2;   /* 奶橘 ← 等正式色碼，先用同家族淡橘佔位 */
 
+  /* 重點日（ML-FC）專用：比蜜桃粉再濃一階，讓那天一眼就不一樣
+     仍然只當底色，文字一律用 --ink */
+  --rose:    #F7C2C7;
+
   /* 加深版：只用於描邊、圖示、裝飾
      ⚠ 對奶油底只有約 2.7:1，不要拿來寫文字 */
   --peach-deep:   #D98C85;
   --mint-deep:    #7FAE6B;
   --apricot-deep: #E09B5B;
+  --rose-deep:    #CE7079;
 
   /* 背景柔光用（原色 + 透明度） */
   --wash-peach:   #FBD4D1d9;
