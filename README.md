@@ -11,6 +11,7 @@ index.html              頁面骨架（只有結構，沒有樣式和資料）
 package.json            開發指令，沒有任何 dependencies
 scripts/
   dev-server.mjs        本機預覽 server（Node 內建模組，零依賴）
+  csp-hash.mjs          重算 index.html 行內 script 的 CSP hash
 css/
   theme.css             ← 設計設定檔：顏色、字體、字級、間距、圓角、陰影
   base.css              reset、底色、三色柔光背景
@@ -81,3 +82,23 @@ server 是 `scripts/dev-server.mjs`，只用 Node 內建模組寫的，**零依�
 ## 部署
 
 push 到 `main` 就會自動更新（GitHub Pages）。
+
+## 安全性設定
+
+`index.html` 的 `<head>` 有兩個 meta：
+
+- `robots: noindex, nofollow` —— 不讓搜尋引擎收錄。**注意這只擋爬蟲，
+  知道網址的人照樣看得到整份行程**（日期、住宿、每天的位置）。
+- `Content-Security-Policy` —— 只允許載入本站資源。行內 script 用
+  `'sha256-…'` 精確放行，而不是 `'unsafe-inline'`，所以被注入的行內
+  script 會被瀏覽器擋掉。
+
+**改動 `index.html` 裡那段行內 script 之後，一定要跑：**
+
+```bash
+npm run csp-hash
+```
+
+連一個空白的差異都會讓 hash 失效，那段 script 就會被擋掉（頁面照樣
+顯示，只是 `file://` 的提示不會出現）。改完忘記跑的話，瀏覽器 console
+會有 CSP 錯誤。
