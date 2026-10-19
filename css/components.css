@@ -1,0 +1,154 @@
+/* ═══════════════════════════════════════════════════════════
+   components.css ── 行程卡、地圖按鈕、底部圓點、桌機箭頭
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 行程列表 ──────────────────────────── */
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-item);
+  padding: 14px var(--gutter) 0;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: var(--time-col) 1fr;  /* 時間欄固定寬 → 所有列左緣對齊 */
+  gap: 10px;
+  padding: 14px var(--gutter);
+  border-radius: var(--radius-card);
+  background: var(--card);
+  box-shadow: var(--shadow-card);              /* 應援色調過的陰影，淡色系才不會髒 */
+}
+
+.item__time {
+  padding-top: 3px;
+  font-size: var(--fs-time);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;          /* 數字等寬，對齊成一條直線 */
+  letter-spacing: -.01em;
+  line-height: 1.3;
+}
+/* 沒寫時間的項目：留一個淡點，維持左緣對齊 */
+.item__time:empty::before {
+  content: "·";
+  color: var(--ink-soft);
+  opacity: .45;
+}
+
+.item__name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-name);
+  font-weight: 600;
+  line-height: 1.35;
+}
+/* 圖示底色由 --tint 決定：綠＝移動、橘＝吃的、粉＝其他 */
+.item__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: var(--radius-icon);
+  background: var(--tint);
+  font-size: 14px;
+}
+.item__addr {
+  margin-top: 5px;
+  font-size: var(--fs-addr);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.item__note {
+  margin-top: 8px;
+  padding: 7px 11px;
+  border-radius: var(--radius-note);
+  background: var(--note-bg);
+  font-size: var(--fs-note);
+  line-height: 1.5;
+}
+
+/* ── 地圖 / 導航按鈕 ───────────────────── */
+.acts { display: flex; gap: 8px; margin-top: 11px; }
+
+.act {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: var(--tap);
+  padding: 0 var(--gutter);
+  border: 1.5px solid var(--accent-deep);
+  border-radius: var(--radius-pill);
+  background: #fff;
+  color: var(--ink);
+  font-size: var(--fs-act);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s, transform .1s;
+}
+.act--primary { background: var(--accent); border-color: var(--accent); }
+.act:active { transform: scale(.97); }
+@media (hover: hover) {
+  .act:hover { background: var(--accent); }
+}
+
+/* ── 底部圓點 ──────────────────────────── */
+.dots {
+  position: fixed;
+  left: 50%;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border-radius: var(--radius-pill);
+  transform: translateX(-50%);
+  background: #FFFBF7d9;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-float);
+}
+.dot {
+  width: 9px; height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #4A443F29;
+  cursor: pointer;
+  transition: width .2s, background .2s;
+}
+.dot[aria-current="true"] {
+  width: 24px;
+  border-radius: var(--radius-pill);
+}
+
+/* ── 桌機左右箭頭（手機不顯示，用手滑） ── */
+.arrow { display: none; }
+
+@media (min-width: 880px) {
+  .items { max-width: var(--content-max); margin: 0 auto; }
+
+  .arrow {
+    position: fixed;
+    top: 50%;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    width: 46px; height: 46px;
+    margin-top: -23px;
+    border: 0;
+    border-radius: 50%;
+    background: #FFFBF7e6;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 22px -10px #4A443F59;
+    color: var(--ink);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .arrow--prev { left: 18px; }
+  .arrow--next { right: 18px; }
+  .arrow[disabled] { opacity: .3; cursor: default; }
+}

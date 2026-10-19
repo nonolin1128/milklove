@@ -1,0 +1,54 @@
+/* ═══════════════════════════════════════════════════════════
+   base.css ── reset、文件底色、三色柔光背景
+   ═══════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; height: 100%; }
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--cream);
+  overflow: hidden;              /* 捲動交給 .deck / .day__scroll */
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 三色超淡柔光底 ── 淡色夢幻最吃的一層 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  z-index: -1;
+  background:
+    radial-gradient(58% 44% at 14%   6%, var(--wash-peach),   #FBD4D100 72%),
+    radial-gradient(54% 40% at 88%  32%, var(--wash-apricot), #FBDFC200 72%),
+    radial-gradient(72% 50% at 46% 102%, var(--wash-mint),    #CDE5C000 72%),
+    var(--cream);
+  filter: blur(14px);
+}
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+/* 用 http 開啟的提示（file:// 直開時 ES module 會被瀏覽器擋住） */
+.fallback {
+  max-width: 520px;
+  margin: 18vh auto;
+  padding: 0 24px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.fallback code {
+  display: block;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-note);
+  background: var(--card);
+  box-shadow: 0 1px 2px #4A443F14;
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}

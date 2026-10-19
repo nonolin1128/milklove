@@ -1,0 +1,138 @@
+/* ═══════════════════════════════════════════════════════════
+   layout.css ── 一天一頁的骨架：橫向日卡、頂部大圖、黏性日期條
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── 橫向日卡容器（左右滑的主體，純 CSS scroll-snap） ── */
+.deck {
+  display: flex;
+  height: 100dvh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;   /* 擋掉 iOS 往回滑上一頁 */
+  scrollbar-width: none;
+}
+.deck::-webkit-scrollbar { display: none; }
+
+.day {
+  flex: 0 0 100%;
+  height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;         /* 一次只滑一天，不會連跳兩天 */
+}
+
+/* 每天各自的垂直捲動 → 直向看行程、橫向換天，兩個方向不打架 */
+.day__scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(100px + env(safe-area-inset-bottom));
+  scrollbar-width: none;
+}
+.day__scroll::-webkit-scrollbar { display: none; }
+
+/* ── 頂部大圖 ──────────────────────────── */
+.hero {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  min-height: 188px;
+  max-height: 44dvh;
+  overflow: hidden;
+}
+.hero img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* 沒給圖的那天：純色漸層佔位，版面不破 */
+.hero--blank {
+  background:
+    radial-gradient(74% 74% at 18% 16%, #ffffffb3, #ffffff00 62%),
+    linear-gradient(148deg, var(--accent) 0%, #FFFFFF 88%);
+}
+
+/* 圖底部淡出成奶油色，讓圖和背景融在一起 */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--cream) 1%, #FFFBF700 48%);
+}
+
+.hero__text {
+  position: absolute;
+  z-index: 1;                       /* 壓在 ::after 漸層之上 */
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 12px;
+}
+.hero__trip {
+  font-size: var(--fs-trip);
+  letter-spacing: .16em;
+  color: var(--ink-soft);
+}
+.hero__day {
+  margin: 3px 0 5px;
+  font-size: var(--fs-day);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1;
+}
+.hero__date {
+  font-size: var(--fs-date);
+  font-variant-numeric: tabular-nums;
+}
+.hero__badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 11px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  box-shadow: 0 0 0 5px #FBD4D159; /* 主要活動日的柔光 */
+  font-size: 12px;
+  font-weight: 700;
+  vertical-align: 2px;
+}
+
+/* ── 捲動後黏在頂部的日期條 ─────────────── */
+.daybar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 20px;
+  background: #FFFBF7e8;
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--fs-bar);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.daybar__dot {
+  flex: 0 0 auto;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--accent-deep);
+}
+.daybar__today {
+  margin-left: auto;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* 桌機：內容置中不要拉得太寬 */
+@media (min-width: 880px) {
+  .hero__text {
+    left: 50%;
+    right: auto;
+    width: var(--content-max);
+    max-width: 100%;
+    padding: 0 var(--gutter);
+    transform: translateX(-50%);
+  }
+}

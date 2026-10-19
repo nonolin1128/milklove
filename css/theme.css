@@ -1,0 +1,72 @@
+/* ═══════════════════════════════════════════════════════════
+   theme.css ── 設計設定檔
+   顏色、字體、字級、間距、圓角、陰影都在這裡
+   想調整外觀，改這個檔案就好，不用碰其他 CSS
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── 應援色 ──────────────────────────── */
+  --peach:   #FBD4D1;   /* 蜜桃粉 */
+  --mint:    #CDE5C0;   /* 奶綠 */
+  --apricot: #FBDFC2;   /* 奶橘 ← 等正式色碼，先用同家族淡橘佔位 */
+
+  /* 加深版：只用於描邊、圖示、裝飾
+     ⚠ 對奶油底只有約 2.7:1，不要拿來寫文字 */
+  --peach-deep:   #D98C85;
+  --mint-deep:    #7FAE6B;
+  --apricot-deep: #E09B5B;
+
+  /* 背景柔光用（原色 + 透明度） */
+  --wash-peach:   #FBD4D1d9;
+  --wash-apricot: #FBDFC2cc;
+  --wash-mint:    #CDE5C0cc;
+
+  /* ── 底色與文字 ──────────────────────── */
+  --cream:    #FFFBF7;  /* 奶油背景 */
+  --card:     #FFFFFF;  /* 卡片 */
+  --ink:      #4A443F;  /* 主要文字（暖灰，淡色底上比純黑柔） */
+  --ink-soft: #9A9289;  /* 次要文字：地址、備註 */
+  --note-bg:  #FBF7F2;  /* 備註底色 */
+  --hairline: #4A443F0f;
+
+  /* ── 字體 ────────────────────────────── */
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC",
+               "Hiragino Sans", "Microsoft JhengHei", sans-serif;
+
+  /* ── 字級 ────────────────────────────── */
+  --fs-trip: 11px;                      /* 大圖上的行程名 */
+  --fs-day:  clamp(34px, 11vw, 46px);   /* DAY N */
+  --fs-date: 15px;                      /* 日期 */
+  --fs-bar:  13px;                      /* 黏性日期條 */
+  --fs-time: 13.5px;                    /* 時間欄 */
+  --fs-name: 16px;                      /* 地點名稱 */
+  --fs-addr: 12.5px;                    /* 地址 */
+  --fs-note: 13px;                      /* 備註 */
+  --fs-act:  13px;                      /* 地圖/導航按鈕 */
+
+  /* ── 尺寸與間距 ──────────────────────── */
+  --gutter:       16px;  /* 左右留白 */
+  --gap-item:     10px;  /* 行程之間 */
+  --time-col:     52px;  /* 時間欄寬（決定所有列的左緣對齊） */
+  --icon-size:    27px;
+  --tap:          44px;  /* 最小手指目標 */
+  --content-max:  680px; /* 桌機內容最大寬 */
+
+  --radius-card: 22px;
+  --radius-icon: 9px;
+  --radius-note: 12px;
+  --radius-pill: 999px;
+
+  /* ── 陰影 ────────────────────────────── */
+  --shadow-card:  0 7px 20px -9px var(--shadow), 0 1px 2px #4A443F0a;
+  --shadow-float: 0 10px 26px -12px #4A443F66;
+  --blur-glass:   blur(12px);
+
+  /* 圖示底色，由 js/render.js 逐項 inline 覆寫（預設值僅作保險） */
+  --tint: var(--peach);
+
+  /* ── 每天輪替的主題色（由 js/render.js 逐天 inline 覆寫） ── */
+  --accent:      var(--peach);
+  --accent-deep: var(--peach-deep);
+  --shadow:      #D98C8533;
+}
