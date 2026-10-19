@@ -9,6 +9,8 @@
      address 店名或地址，會顯示在名稱下面一行
      coords  "緯度,經度"：路邊攤或沒有店名的落點針用這個，地圖連結優先吃它
      note    備註
+     ig      Instagram 貼文連結，多一顆「📷 IG」按鈕
+     video   影片連結（YouTube／Bilibili…），多一顆「▶ 影片」按鈕
      nomap   true = 沒有實際地點，不顯示地圖/導航按鈕
 
    每天的欄位：
@@ -47,19 +49,25 @@ export const TRIP = {
       items: [
         { time: "07:00", type: "food", name: "逛早市・吃粿雜",
           coords: "13.750697,100.499296",
-          note: "唐人街早市・Google Maps 上只是一根落點針，沒有店名" },
+          note: "hen好吃的粿雜" },
         { time: "", type: "cafe", name: "偷情咖啡廳", address: "PAULETTE BKK",
           coords: "13.7495233,100.4980413",
+          ig: "https://www.instagram.com/p/Db2aKlOHROu/?img_index=5",
           note: "「偷情咖啡廳」是暱稱，正式店名 PAULETTE BKK" },
-        { time: "", type: "sight", name: "臥佛寺（擼貓）", address: "Wat Pho, Bangkok" },
+        { time: "", type: "sight", name: "臥佛寺（擼貓）", address: "Wat Pho, Bangkok",
+          ig: "https://www.instagram.com/p/C5p4Ys-BYAs/?img_index=1" },
         { time: "", type: "spa", name: "臥佛寺按摩學校",
           address: "Wat Pho Thai Traditional Medical and Massage School, Bangkok" },
         { time: "午餐", type: "food", name: "Medium Rare Tha Tian", address: "",
+          ig: "https://www.instagram.com/p/C5srlDxPLmV/?img_index=5",
           note: "小愛喜歡的烤牛肉" },
         { time: "", type: "sight", name: "河邊看鄭王廟河景", address: "Wat Arun Viewing Point",
           coords: "13.7448659,100.4909543",
-          note: "鄭王廟對岸的觀景點，不是廟本體 —— 別讓導航帶你過河" },
-        { time: "", type: "shop", name: "帕空鮮花市場", address: "Pak Khlong Talat, Bangkok" },
+          ig: "https://www.instagram.com/p/Dc-9Hhek1vm/?img_index=4",
+          note: "潘薩Vogue" },
+        { time: "", type: "shop", name: "帕空鮮花市場", address: "Pak Khlong Talat, Bangkok",
+          ig: "https://www.instagram.com/p/Dc-9Hhek1vm/?img_index=1",
+          note: "潘薩Vogue" },
         { time: "", type: "food", name: "班蘭蛋捲", address: "班斕蛋捲",
           coords: "13.744068,100.499268",
           note: "鮮花市場附近" },
@@ -89,7 +97,7 @@ export const TRIP = {
         { time: "10:30", type: "food", name: "壁畫粿雜",
           address: "ก๋วยจั๊บน้ำใสตรอกวัดพระพิเรนทร์ ฝั่งวรจักร (เจ๊เกียง)",
           coords: "13.7480824,100.5062635",
-          note: "「壁畫粿雜」是暱稱・上面泰文店名可以直接拿給司機看" },
+          note: "最好吃粿雜！" },
         { time: "", type: "cafe", name: "Siam Subway", address: "Siam Subway, Bangkok",
           note: "喝抹茶" },
         { time: "12:00", type: "hotel", name: "check out", nomap: true },
@@ -97,11 +105,13 @@ export const TRIP = {
         { time: "", type: "hotel", name: "Taipan Hotel check in",
           address: "Taipan Hotel, Bangkok" },
         { time: "午餐", type: "food", name: "สมยงตำซั่ว สุขุมวิท-อโศก", address: "",
+          video: "https://www.bilibili.com/video/BV1pv421C7WM/",
           note: "奶愛吃過的餐廳" },
         { time: "14:30", type: "cafe", name: "GMM 咖啡廳", address: "GEMM HOUSE",
           coords: "13.7434165,100.5629013",
-          note: "正式店名是 GEMM HOUSE（中間兩個 M，不是 GMM）" },
-        { time: "", type: "park", name: "班嘉奇蒂公園", address: "Benjakitti Park, Bangkok" },
+          note: "看孫孫 花錢錢" },
+        { time: "", type: "park", name: "班嘉奇蒂公園", address: "Benjakitti Park, Bangkok",
+          note: "要穿全身黑！" },
         { time: "18:00", type: "park", name: "倫披尼公園・跳大會操",
           address: "Lumphini Park, Bangkok",
           note: "從班嘉奇蒂公園散步過去" },
@@ -132,7 +142,8 @@ export const TRIP = {
         { time: "", type: "train", name: "坐 BTS 到 Ari", address: "Ari BTS Station, Bangkok",
           note: "開始潘薩之旅" },
         { time: "午餐", type: "food", name: "Poet House Cafe", address: "" },
-        { time: "下午茶", type: "cafe", name: "Dog In Town Ari", address: "" },
+        { time: "下午茶", type: "cafe", name: "Dog In Town Ari", address: "",
+          ig: "https://www.instagram.com/p/DerD8fCk1tL/?img_index=1" },
         { time: "", type: "other", name: "小愛踩點之旅", nomap: true },
         { time: "晚餐", type: "food", name: "The Camping Ground", address: "" },
         { time: "點心", type: "food", name: "香蕉煎餅", address: "Roti",
@@ -152,7 +163,7 @@ export const TRIP = {
       items: [
         { time: "17:00", type: "show", name: "Milk Love Whimsical House Fancon",
           address: "Union Hall, Union Mall, Bangkok",
-          note: "海報寫 5 PM・票價 1,500～6,900・座位待補" },
+          note: "看奶愛！！！！！！" },
       ],
     },
   ],

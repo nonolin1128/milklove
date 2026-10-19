@@ -30,6 +30,13 @@ function pad(n) {
   return String(n).padStart(2, "0");
 }
 
+/* 外部連結（IG、影片）用。href 吃到 javascript: 會執行，而這些網址是
+   從外面貼進來的，所以只放行 http/https，其餘一律當成沒填 */
+export function safeUrl(u) {
+  const s = String(u ?? "").trim();
+  return /^https?:\/\//i.test(s) ? s : "";
+}
+
 /* 地圖搜尋字串，由準到不準依序取用：
      coords  "緯度,經度" —— 路邊攤、沒有店名的落點針只有這個找得到
      address 店名或地址

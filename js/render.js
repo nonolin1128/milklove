@@ -4,7 +4,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 import { TYPES, TINT, ACCENTS, guessType } from "./config.js";
-import { esc, fmtDate, todayISO, mapQuery } from "./util.js";
+import { esc, fmtDate, todayISO, mapQuery, safeUrl } from "./util.js";
 
 const MAP_SEARCH = "https://www.google.com/maps/search/?api=1&query=";
 const MAP_DIR    = "https://www.google.com/maps/dir/?api=1&destination=";
@@ -15,14 +15,23 @@ export function renderItem(item, city) {
   const { icon, group } = TYPES[type];
   const q = mapQuery(item, city);
 
-  const acts = q
+  /* 按鈕列：有地點就給地圖／導航，有連結就多一顆。全空則整列不出現 */
+  const btn = (href, label, cls = "act") =>
+    `<a class="${cls}" target="_blank" rel="noopener" href="${href}">${label}</a>`;
+
+  const btns = [];
+  if (q) {
+    btns.push(btn(`${MAP_SEARCH}${q}`, "📍 地圖"));
+    btns.push(btn(`${MAP_DIR}${q}`, "🧭 導航", "act act--primary"));
+  }
+  const ig = safeUrl(item.ig);
+  if (ig) btns.push(btn(esc(ig), "📷 IG"));
+  const video = safeUrl(item.video);
+  if (video) btns.push(btn(esc(video), "▶ 影片"));
+
+  const acts = btns.length
     ? `
-        <div class="acts">
-          <a class="act" target="_blank" rel="noopener"
-             href="${MAP_SEARCH}${q}">📍 地圖</a>
-          <a class="act act--primary" target="_blank" rel="noopener"
-             href="${MAP_DIR}${q}">🧭 導航</a>
-        </div>`
+        <div class="acts">${btns.join("")}</div>`
     : "";
 
   return `

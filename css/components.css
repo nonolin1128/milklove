@@ -70,7 +70,8 @@
 }
 
 /* ── 地圖 / 導航按鈕 ───────────────────── */
-.acts { display: flex; gap: 8px; margin-top: 11px; }
+/* 一列可能有 4 顆（地圖／導航／IG／影片），窄螢幕要能換行 */
+.acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px; }
 
 .act {
   display: inline-flex;
