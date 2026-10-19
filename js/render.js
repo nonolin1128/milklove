@@ -47,8 +47,11 @@ export function renderDay(day, i, tripTitle) {
   const n = i + 1;
   const where = day.city ? " · " + esc(day.city) : "";
 
+  /* focus 決定 16:9 裁切時保住畫面的哪一段（直式照片一定要給，
+     不然置中裁切會把臉和招牌切掉）。沒給就置中。 */
   const hero = day.image
     ? `<img src="${esc(day.image)}" alt="Day ${n} ${esc(day.city || "")}"
+            style="object-position:center ${esc(day.focus || "center")}"
             ${i === 0 ? "" : 'loading="lazy"'} decoding="async">`
     : "";
 
