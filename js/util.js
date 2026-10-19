@@ -30,10 +30,14 @@ function pad(n) {
   return String(n).padStart(2, "0");
 }
 
-/* 地圖搜尋字串：有地址用地址，沒有就用「地點名稱 + 城市」
+/* 地圖搜尋字串，由準到不準依序取用：
+     coords  "緯度,經度" —— 路邊攤、沒有店名的落點針只有這個找得到
+     address 店名或地址
+     名稱 + 城市
+   Google Maps 的 query / destination 參數兩者都吃座標，所以不用分開處理。
    回傳空字串代表這項不該顯示地圖按鈕 */
 export function mapQuery(item, city) {
   if (item.nomap) return "";
-  const q = (item.address || `${item.name || ""} ${city || ""}`).trim();
+  const q = (item.coords || item.address || `${item.name || ""} ${city || ""}`).trim();
   return q ? encodeURIComponent(q) : "";
 }
