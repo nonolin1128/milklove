@@ -8,7 +8,6 @@
 
 ```
 index.html              頁面骨架（只有結構，沒有樣式和資料）
-start.command           雙擊即可本機預覽（起 server + 開瀏覽器）
 package.json            開發指令，沒有任何 dependencies
 scripts/
   dev-server.mjs        本機預覽 server（Node 內建模組，零依賴）
@@ -30,17 +29,13 @@ images/                 每天的頂部大圖（day1.jpg…）
 
 ## 本機預覽
 
-**雙擊 `start.command`** — 會自動起一個本機 server 並開瀏覽器。
+```bash
+npm run dev     # 然後開 http://localhost:8000
+```
 
 為什麼不能直接雙擊 `index.html`：用了 ES module，而瀏覽器把 `file://`
 開啟的檔案視為 origin = null，CORS 檢查永遠不會通過，`import` 會被擋下
 （頁面會顯示提示）。線上版沒這問題 —— GitHub Pages 給的是 https 網址。
-
-或者用指令：
-
-```bash
-npm run dev     # 然後開 http://localhost:8000
-```
 
 server 是 `scripts/dev-server.mjs`，只用 Node 內建模組寫的，**零依賴**，
 `npm install` 不用跑。連接埠被占用會自動往上找下一個。
