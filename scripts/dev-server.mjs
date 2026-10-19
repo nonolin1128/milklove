@@ -62,6 +62,13 @@ const server = createServer(async (req, res) => {
     });
     res.end(body);
   } catch {
+    /* 跟 GitHub Pages 一樣吐 404.html，本機才測得到那頁 */
+    const page = await readFile(join(ROOT, "404.html")).catch(() => null);
+    if (page) {
+      res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" });
+      res.end(page);
+      return;
+    }
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("404 Not Found");
   }
