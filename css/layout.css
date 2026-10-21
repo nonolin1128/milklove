@@ -36,6 +36,7 @@
 /* ── 頂部大圖 ──────────────────────────── */
 .hero {
   position: relative;
+  width: 100%;                      /* 明確給寬度：不然 max-height 會透過 aspect-ratio 反推出寬度上限，大圖縮在左邊 */
   aspect-ratio: 16 / 9;
   min-height: 188px;
   max-height: 44dvh;

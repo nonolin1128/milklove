@@ -1,0 +1,26 @@
+name: ci 練習
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: JavaScript 語法檢查
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得專案程式碼
+        uses: actions/checkout@v4
+      - name: 安裝 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 檢查 JavaScript 語法
+        run: |
+          find js scripts -type f \( -name '*.js' -o -name '*.mjs' \) \
+            -exec sh -c 'for file do node --check "$file" || exit 1; done' sh {} +
