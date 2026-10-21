@@ -22,7 +22,7 @@ js/
   util.js               跳脫、日期格式、Google Maps 搜尋字串
   render.js             把資料畫成 HTML（純函式）
   app.js                掛上畫面、滑動、圓點、鍵盤、hash
-images/                 每天的頂部大圖（day1.jpg…）
+images/                 每天的頂部大圖（day1.webp…）
 ```
 
 平常只會動兩個檔案：**改行程 → `js/trip.js`**，**改外觀 → `css/theme.css`**。
@@ -75,7 +75,7 @@ server 是 `scripts/dev-server.mjs`，只用 Node 內建模組寫的，**零依�
 
 ## 圖片
 
-放進 `images/`，在 `js/trip.js` 用 `image: "images/day1.jpg"` 指定。
+放進 `images/`，在 `js/trip.js` 用 `image: "images/day1.webp"` 指定。
 先壓再放：寬 1200px、WebP、每張 150KB 以下。沒給圖的那天會自動用純色漸層。
 
 ## 部署
