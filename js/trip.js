@@ -15,7 +15,7 @@
 
    每天的欄位：
      date / city / items
-     image     頂部大圖（例 "images/day1.jpg"），留空用純色漸層
+     image     頂部大圖（例 "images/day1.webp"），留空用純色漸層
      focus     大圖在 16:9 裁切時的垂直對齊（"10%" = 靠上）
                直式照片一定要給，不然置中裁切會把臉切掉
      highlight true = 主要活動日，強制粉色 + 柔光
@@ -29,7 +29,7 @@ export const TRIP = {
     {
       date: "2026-11-11",
       city: "曼谷",
-      image: "images/day1.jpg",
+      image: "images/day1.webp",
       items: [
         { time: "19:00", type: "hotel", name: "住宿 check-in", nomap: true,
           note: "飯店名稱待補" },
@@ -44,7 +44,7 @@ export const TRIP = {
     {
       date: "2026-11-12",
       city: "曼谷",
-      image: "images/day2.jpg",
+      image: "images/day2.webp",
       focus: "20%",            /* 保住上排最高那顆頭 */
       items: [
         { time: "07:00", type: "food", name: "逛早市・吃粿雜",
@@ -91,7 +91,7 @@ export const TRIP = {
     {
       date: "2026-11-13",
       city: "曼谷",
-      image: "images/day3.jpg",
+      image: "images/day3.webp",
       focus: "55%",            /* 直式照：對準人臉和玩偶的臉，招牌和下半身讓它裁掉 */
       items: [
         { time: "10:30", type: "food", name: "壁畫粿雜",
@@ -127,7 +127,7 @@ export const TRIP = {
     {
       date: "2026-11-14",
       city: "曼谷",
-      image: "images/day4.jpg",
+      image: "images/day4.webp",
       items: [
         { time: "07:00", type: "food", name: "BARTELS", address: "Bartels, Bangkok",
           note: "酸種麵包吃早餐" },
@@ -156,7 +156,7 @@ export const TRIP = {
     {
       date: "2026-11-15",
       city: "曼谷",
-      image: "images/day5.jpg",
+      image: "images/day5.webp",
       focus: "10%",            /* 直式海報：保住標題和兩個人，底部售票資訊讓它裁掉 */
       highlight: true,
       badge: "ML-FC",
