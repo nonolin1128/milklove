@@ -178,16 +178,20 @@ export function renderOverview(days) {
     </div>`;
 }
 
-/* 清單跳窗：checked 是已打勾的名字（Set） */
+/* 清單跳窗：sections 是合併過手機增刪的結果，checked 是已打勾的名字（Set） */
 export function renderChecklist(sections, checked) {
-  const row = (item) => {
+  const row = (item, title) => {
     const q = mapQuery(item, "");
     return `
           <li class="check">
-            <label class="check__label">
-              <input type="checkbox" data-name="${esc(item.name)}"${checked.has(item.name) ? " checked" : ""}>
-              <span>${esc(item.name)}</span>
-            </label>
+            <div class="check__row">
+              <label class="check__label">
+                <input type="checkbox" data-name="${esc(item.name)}"${checked.has(item.name) ? " checked" : ""}>
+                <span>${esc(item.name)}</span>
+              </label>
+              <button class="check__remove" type="button" data-remove="${esc(item.name)}" data-section="${esc(title)}"
+                      aria-label="刪除 ${esc(item.name)}">✕</button>
+            </div>
             ${item.address && q ? `<div class="acts">
               <a class="act" target="_blank" rel="noopener" href="${MAP_SEARCH}${q}">📍 地圖</a>
               <a class="act act--primary" target="_blank" rel="noopener" href="${MAP_DIR}${q}">🧭 導航</a>
@@ -198,8 +202,13 @@ export function renderChecklist(sections, checked) {
   const blocks = sections.map((s) => `
       <section class="checklist__section">
         <h3 class="checklist__heading"><span aria-hidden="true">${s.icon}</span> ${esc(s.title)}</h3>
-        <ul>${s.items.map(row).join("")}
+        <ul>${s.items.map((item) => row(item, s.title)).join("")}
         </ul>
+        <form class="check__add" data-section="${esc(s.title)}">
+          <input class="check__input" name="entry" type="text" maxlength="40" autocomplete="off"
+                 enterkeyhint="done" placeholder="新增項目" aria-label="新增到${esc(s.title)}">
+          <button class="check__submit" type="submit">新增</button>
+        </form>
       </section>`).join("");
 
   return `

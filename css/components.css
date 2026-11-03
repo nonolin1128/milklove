@@ -410,11 +410,15 @@
   font-weight: 800;
 }
 .check { border-bottom: 1px solid var(--hairline); }
+.check__row { display: flex; align-items: center; gap: 4px; }
 .check__label {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 10px;
   min-height: var(--tap);
+  overflow-wrap: anywhere;
   font-size: var(--fs-name);
   cursor: pointer;
 }
@@ -495,4 +499,41 @@
 }
 @media (hover: hover) {
   .buddy__item:hover { background: var(--note-bg); }
+}
+.check__remove {
+  flex: 0 0 auto;
+  width: var(--tap);
+  height: var(--tap);
+  margin-right: -12px;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+}
+.check__add { display: flex; gap: 8px; margin-top: 10px; }
+.check__input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 1px solid #4A443F33;
+  border-radius: var(--radius-note);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;                 /* 小於 16px 時 iOS 點進去會自動放大畫面 */
+}
+.check__submit {
+  flex: 0 0 auto;
+  min-height: var(--tap);
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-note);
+  background: var(--accent);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-act);
+  font-weight: 700;
+  cursor: pointer;
 }

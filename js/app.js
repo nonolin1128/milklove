@@ -4,7 +4,7 @@
 
 import { TRIP } from "./trip.js";
 import { renderDay, renderOverview, renderChecklist, accentFor } from "./render.js";
-import { fmtDate, todayISO } from "./util.js";
+import { fmtDate, todayISO, mergeChecklist } from "./util.js";
 
 const deck    = document.getElementById("deck");
 const dotsEl  = document.getElementById("dots");
@@ -138,19 +138,96 @@ function saveChecked(checked) {
   }
 }
 
+/* 手機上對清單的新增、刪除，格式見 util.js 的 mergeChecklist */
+const LIST_KEY = "milklove-list";
+
+function loadEdits() {
+  try {
+    return JSON.parse(localStorage.getItem(LIST_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveEdits(edits) {
+  try {
+    localStorage.setItem(LIST_KEY, JSON.stringify(edits));
+  } catch {
+    /* 存不了的話，這次的增刪重新整理後就會消失 */
+  }
+}
+
+function currentSections() {
+  return mergeChecklist(TRIP.checklist || [], loadEdits());
+}
+
+/* 重畫清單，捲動位置留在原地 */
+function drawChecklist() {
+  const top = checklist.querySelector(".checklist__body")?.scrollTop ?? 0;
+  checklist.innerHTML = renderChecklist(currentSections(), loadChecked());
+  checklist.querySelector(".checklist__body").scrollTop = top;
+}
+
+function addListItem(title, name) {
+  const edits = loadEdits();
+  const edit = (edits[title] ||= { added: [], removed: [] });
+  if (edit.removed.includes(name)) {
+    edit.removed = edit.removed.filter((n) => n !== name);   /* 預設項目刪掉又加回來 */
+  } else {
+    const section = currentSections().find((s) => s.title === title);
+    if (section.items.some((item) => item.name === name)) return;   /* 已經有了 */
+    edit.added.push(name);
+  }
+  saveEdits(edits);
+}
+
+function removeListItem(title, name) {
+  const edits = loadEdits();
+  const edit = (edits[title] ||= { added: [], removed: [] });
+  if (edit.added.includes(name)) edit.added = edit.added.filter((n) => n !== name);
+  else edit.removed.push(name);
+  saveEdits(edits);
+
+  const checked = loadChecked();
+  checked.delete(name);
+  saveChecked(checked);
+}
+
 openChecklistBtn.addEventListener("click", () => {
-  checklist.innerHTML = renderChecklist(TRIP.checklist || [], loadChecked());
+  drawChecklist();
   checklist.showModal();
 });
 checklist.addEventListener("click", (e) => {
   /* 點到跳窗外的暗色背景時，target 會是 dialog 本身 */
-  if (e.target === checklist || e.target.closest("[data-close]")) checklist.close();
+  if (e.target === checklist || e.target.closest("[data-close]")) {
+    checklist.close();
+    return;
+  }
+  const remove = e.target.closest("[data-remove]");
+  if (remove) {
+    removeListItem(remove.dataset.section, remove.dataset.remove);
+    drawChecklist();
+  }
 });
 checklist.addEventListener("change", (e) => {
+  if (e.target.type !== "checkbox") return;
   const checked = loadChecked();
   if (e.target.checked) checked.add(e.target.dataset.name);
   else checked.delete(e.target.dataset.name);
   saveChecked(checked);
+});
+checklist.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const title = e.target.dataset.section;
+  const name = e.target.elements.entry.value.trim();
+  if (name) {
+    addListItem(title, name);
+    drawChecklist();
+  }
+  /* 焦點留在輸入框，可以連續新增 */
+  const form = [...checklist.querySelectorAll(".check__add")].find((f) => f.dataset.section === title);
+  form.elements.entry.value = "";
+  form.elements.entry.focus();
 });
 
 /* 浮動小狗：拖到哪就貼齊最近的左右邊，位置記在這支手機；點一下開選單 */

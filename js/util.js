@@ -49,3 +49,19 @@ export function mapQuery(item, city) {
   const q = (item.coords || item.search || item.address || `${item.name || ""} ${city || ""}`).trim();
   return q ? encodeURIComponent(q) : "";
 }
+
+/* 清單 = trip.js 的預設 + 手機上的增刪。edits 長這樣：
+     { "要買的": { added: ["芒果乾"], removed: ["泰奶粉"] } }
+   分開記才不會互相覆蓋：之後改 trip.js 的預設，手機上的增刪都還在 */
+export function mergeChecklist(sections, edits) {
+  return sections.map((section) => {
+    const { added = [], removed = [] } = edits[section.title] || {};
+    return {
+      ...section,
+      items: [
+        ...section.items.filter((item) => !removed.includes(item.name)),
+        ...added.map((name) => ({ name })),
+      ],
+    };
+  });
+}

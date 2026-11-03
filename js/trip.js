@@ -30,6 +30,7 @@
    checklist（在最下面）：底部「清單」按鈕的內容
      每區 icon / title / items；項目的 name、address 同上，有 address 就有地圖按鈕
      打勾記錄用 name 當鑰匙，所以改名字後要重勾
+     這裡是預設內容；手機上的新增、刪除和打勾另外存在 localStorage，不會改到這裡
    ═══════════════════════════════════════════════════════════ */
 
 export const TRIP = {
