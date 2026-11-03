@@ -7,7 +7,6 @@ import { TYPES, TINT, ACCENTS, SLOTS, guessType, slotsFor } from "./config.js";
 import { esc, fmtDate, todayISO, mapQuery, safeUrl } from "./util.js";
 
 const MAP_SEARCH = "https://www.google.com/maps/search/?api=1&query=";
-const MAP_DIR    = "https://www.google.com/maps/dir/?api=1&destination=";
 
 /* 項目的圖示與分色：有填 type 就用，沒填就照名稱猜；icon 可以單獨覆寫圖示 */
 function typeOf(item) {
@@ -35,30 +34,33 @@ function renderGroup(item, city) {
       </li>`;
 }
 
+/* 地址和名字一樣就不用再顯示一次（"Bartels, Bangkok" 對 "BARTELS"） */
+function showAddress(item) {
+  if (!item.address) return false;
+  const place = item.address.replace(/,\s*Bangkok$/i, "");
+  return place.toLowerCase() !== String(item.name).toLowerCase();
+}
+
+/* 名字右邊的圖示連結：有地點就有地圖，有連結就多一個。全空就不出現 */
+function renderLinks(item, city) {
+  const link = (href, label, icon) =>
+    `<a class="item-link" target="_blank" rel="noopener" href="${href}" aria-label="${label}">${icon}</a>`;
+
+  const links = [];
+  const q = mapQuery(item, city);
+  if (q) links.push(link(`${MAP_SEARCH}${q}`, `在地圖看 ${esc(item.name)}`, "📍"));
+  const ig = safeUrl(item.ig);
+  if (ig) links.push(link(esc(ig), `${esc(item.name)} 的 Instagram`, "📷"));
+  const video = safeUrl(item.video);
+  if (video) links.push(link(esc(video), `${esc(item.name)} 的影片`, "▶"));
+
+  return links.length ? `<div class="item-links">${links.join("")}</div>` : "";
+}
+
 /* 一個行程項目 */
 export function renderItem(item, city) {
   if (item.stops) return renderGroup(item, city);
   const { icon, group } = typeOf(item);
-  const q = mapQuery(item, city);
-
-  /* 按鈕列：有地點就給地圖／導航，有連結就多一顆。全空則整列不出現 */
-  const btn = (href, label, cls = "act") =>
-    `<a class="${cls}" target="_blank" rel="noopener" href="${href}">${label}</a>`;
-
-  const btns = [];
-  if (q) {
-    btns.push(btn(`${MAP_SEARCH}${q}`, "📍 地圖"));
-    btns.push(btn(`${MAP_DIR}${q}`, "🧭 導航", "act act--primary"));
-  }
-  const ig = safeUrl(item.ig);
-  if (ig) btns.push(btn(esc(ig), "📷 IG"));
-  const video = safeUrl(item.video);
-  if (video) btns.push(btn(esc(video), "▶ 影片"));
-
-  const acts = btns.length
-    ? `
-        <div class="acts">${btns.join("")}</div>`
-    : "";
 
   return `
       <li class="item${item.optional ? " item--optional" : ""}">
@@ -68,10 +70,10 @@ export function renderItem(item, city) {
             <span class="item__icon" style="--tint:${TINT[group]}" aria-hidden="true">${icon}</span>
             <span>${esc(item.name)}</span>
             ${item.optional ? `<span class="tag-optional">備選</span>` : ""}
+            ${renderLinks(item, city)}
           </div>
-          ${item.address ? `<div class="item__addr">${esc(item.address)}</div>` : ""}
+          ${showAddress(item) ? `<div class="item__addr">${esc(item.address)}</div>` : ""}
           ${item.note ? `<div class="item__note">${esc(item.note)}</div>` : ""}
-          ${acts}
         </div>
       </li>`;
 }
@@ -81,9 +83,8 @@ export function renderDay(day, i) {
   const a = accentFor(day, i);
   const { label, iso } = fmtDate(day.date);
   const n = i + 1;
-  const where = day.city ? " · " + esc(day.city) : "";
 
-  /* focus 決定 16:9 裁切時保住畫面的哪一段（直式照片一定要給，
+  /* focus 決定 2:1 裁切時保住畫面的哪一段（直式照片一定要給，
      不然置中裁切會把臉和招牌切掉）。沒給就置中。 */
   const hero = day.image
     ? `<img src="${esc(day.image)}" alt="Day ${n} ${esc(day.city || "")}"
@@ -107,13 +108,28 @@ export function renderDay(day, i) {
         </header>
         <div class="daybar">
           <span class="daybar__dot" aria-hidden="true"></span>
-          <span>Day ${n} · ${label}${where}</span>
+          <span>Day ${n} · ${label}</span>
           ${iso === todayISO() ? `<span class="daybar__today">今天</span>` : ""}
         </div>
         <ul class="items">${(day.items || []).map((it) => renderItem(it, day.city)).join("")}
         </ul>
       </div>
     </section>`;
+}
+
+/* 底部日期列：一天一格，主要活動日多一組愛心，今天多一個小圓點 */
+export function renderTabs(days) {
+  const today = todayISO();
+  return days.map((day, i) => {
+    const { label, md, week, iso } = fmtDate(day.date);
+    const isToday = iso === today;
+    return `
+    <button class="tab" data-i="${i}" aria-label="Day ${i + 1} ${label}${isToday ? " 今天" : ""}">
+      ${isToday ? `<span class="tab__today" aria-hidden="true"></span>` : ""}
+      <span class="tab__date">${md}</span>
+      <span class="tab__week">${week}${day.highlight ? `<span class="tab__hearts" aria-hidden="true">💚💖</span>` : ""}</span>
+    </button>`;
+  }).join("");
 }
 
 /* 總表：直欄是每一天、橫列是上午／下午／晚上。每格都能點，跳到那天的詳細頁
@@ -181,7 +197,6 @@ export function renderOverview(days) {
 /* 清單跳窗：sections 是合併過手機增刪的結果，checked 是已打勾的名字（Set） */
 export function renderChecklist(sections, checked) {
   const row = (item, title) => {
-    const q = mapQuery(item, "");
     return `
           <li class="check">
             <div class="check__row">
@@ -189,13 +204,10 @@ export function renderChecklist(sections, checked) {
                 <input type="checkbox" data-name="${esc(item.name)}"${checked.has(item.name) ? " checked" : ""}>
                 <span>${esc(item.name)}</span>
               </label>
+              ${item.address ? renderLinks(item, "") : ""}
               <button class="check__remove" type="button" data-remove="${esc(item.name)}" data-section="${esc(title)}"
                       aria-label="刪除 ${esc(item.name)}">✕</button>
             </div>
-            ${item.address && q ? `<div class="acts">
-              <a class="act" target="_blank" rel="noopener" href="${MAP_SEARCH}${q}">📍 地圖</a>
-              <a class="act act--primary" target="_blank" rel="noopener" href="${MAP_DIR}${q}">🧭 導航</a>
-            </div>` : ""}
           </li>`;
   };
 

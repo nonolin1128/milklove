@@ -14,6 +14,12 @@
      仍然只當底色，文字一律用 --ink */
   --rose:    #F7C2C7;
 
+  /* 底部日期列：muvmuv 的橘色，和正上方的小狗同色
+     比應援色深，所以只用在選到的那一格 */
+  --muvmuv:      #F8B068;   /* 選到 */
+  --muvmuv-wash: #FFF1E3;   /* 沒選到 */
+  --muvmuv-deep: #C96A1E;   /* 今天的小圓點 */
+
   /* 加深版：只用於描邊、圖示、裝飾
      ⚠ 對奶油底只有約 2.7:1，不要拿來寫文字 */
   --peach-deep:   #D98C85;
@@ -46,7 +52,7 @@
   --fs-name: 16px;                      /* 地點名稱 */
   --fs-addr: 12.5px;                    /* 地址 */
   --fs-note: 13px;                      /* 備註 */
-  --fs-act:  13px;                      /* 地圖/導航按鈕 */
+  --fs-act:  13px;                      /* 清單的新增按鈕 */
   --fs-ov-title: 18px;                  /* 總表標題 */
   --fs-ov-head:  12.5px;                /* 總表每天的標題格 */
   --fs-ov-time:  11px;                  /* 總表項目的時間 */
@@ -58,6 +64,7 @@
   --time-col:     52px;  /* 時間欄寬（決定所有列的左緣對齊） */
   --icon-size:    27px;
   --tap:          44px;  /* 最小手指目標 */
+  --tabs-height:  56px;  /* 底部日期列高度（不含手勢條的安全距離） */
   --buddy-size:   56px;  /* 浮動小狗大小，js/app.js 的 BUDDY_SIZE 要一起改 */
   --content-max:  680px; /* 桌機內容最大寬 */
   --ov-slot-col:  36px;  /* 總表「上午／下午／晚上」欄寬 */

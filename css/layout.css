@@ -5,7 +5,7 @@
 /* ── 橫向日卡容器（左右滑的主體，純 CSS scroll-snap） ── */
 .deck {
   display: flex;
-  height: 100dvh;
+  height: calc(100dvh - var(--tabs-height) - env(safe-area-inset-bottom));   /* 底部讓給日期列，內容才不會被蓋住 */
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
@@ -16,7 +16,7 @@
 
 .day {
   flex: 0 0 100%;
-  height: 100dvh;
+  height: 100%;
   overflow: hidden;
   scroll-snap-align: center;
   scroll-snap-stop: always;         /* 一次只滑一天，不會連跳兩天 */
@@ -28,7 +28,7 @@
   overflow-y: auto;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: calc(100px + env(safe-area-inset-bottom));
+  padding-bottom: 80px;             /* 最後一張卡可以捲到小狗上方 */
   scrollbar-width: none;
 }
 .day__scroll::-webkit-scrollbar { display: none; }
@@ -37,8 +37,8 @@
 .hero {
   position: relative;
   width: 100%;                      /* 明確給寬度：不然 max-height 會透過 aspect-ratio 反推出寬度上限，大圖縮在左邊 */
-  aspect-ratio: 16 / 9;
-  min-height: 188px;
+  aspect-ratio: 2 / 1;
+  min-height: 170px;
   max-height: 44dvh;
   overflow: hidden;
 }
@@ -56,7 +56,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, var(--cream) 1%, #FFFBF700 48%);
+  background: linear-gradient(to top, var(--cream) 2%, #FFFBF7b3 26%, #FFFBF700 56%);
 }
 
 .hero__text {
@@ -124,6 +124,9 @@
 
 /* 桌機：內容置中不要拉得太寬 */
 @media (min-width: 880px) {
+  /* 大圖又寬又扁，人臉靠近底部，漸層太濃會把臉蓋掉 */
+  .hero::after { background: linear-gradient(to top, var(--cream) 1%, #FFFBF700 40%); }
+
   .hero__text {
     left: 50%;
     right: auto;

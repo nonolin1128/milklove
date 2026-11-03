@@ -1,13 +1,13 @@
 /* ═══════════════════════════════════════════════════════════
-   app.js ── 掛上畫面、左右滑換天、圓點、鍵盤、hash、總表、清單、浮動小狗、離線
+   app.js ── 掛上畫面、左右滑換天、日期列、鍵盤、hash、總表、清單、浮動小狗、離線
    ═══════════════════════════════════════════════════════════ */
 
 import { TRIP } from "./trip.js";
-import { renderDay, renderOverview, renderChecklist, accentFor } from "./render.js";
+import { renderDay, renderTabs, renderOverview, renderChecklist } from "./render.js";
 import { fmtDate, todayISO, mergeChecklist } from "./util.js";
 
 const deck    = document.getElementById("deck");
-const dotsEl  = document.getElementById("dots");
+const tabsEl  = document.getElementById("tabs");
 const prevBtn = document.getElementById("prev");
 const nextBtn = document.getElementById("next");
 const overview = document.getElementById("overview");
@@ -19,23 +19,16 @@ const days    = TRIP.days || [];
 document.title = TRIP.title || document.title;
 
 deck.innerHTML = days.map((d, i) => renderDay(d, i)).join("");
-dotsEl.innerHTML = days
-  .map((d, i) => `<button class="dot" data-i="${i}" aria-label="Day ${i + 1}"></button>`)
-  .join("");
+tabsEl.innerHTML = renderTabs(days);
 
 const dayEls = [...deck.children];
-const dots   = [...dotsEl.children];
+const tabs   = [...tabsEl.children];
 
 let current = -1;
 
 function setCurrent(i) {
   current = i;
-  const a = accentFor(days[i], i);
-  dots.forEach((dot, j) => {
-    const on = j === i;
-    dot.setAttribute("aria-current", on ? "true" : "false");
-    dot.style.background = on ? a.deep : "";   /* 當前圓點跟著那天的主題色 */
-  });
+  tabs.forEach((tab, j) => tab.setAttribute("aria-current", j === i ? "true" : "false"));
   prevBtn.disabled = i === 0;
   nextBtn.disabled = i === days.length - 1;
 
@@ -49,7 +42,7 @@ function goTo(i, smooth = true) {
   setCurrent(i);
 }
 
-/* 滑到哪天就亮哪個圓點 */
+/* 滑到哪天就亮哪一格 */
 const io = new IntersectionObserver(
   (entries) => {
     for (const e of entries) {
@@ -62,8 +55,8 @@ const io = new IntersectionObserver(
 );
 dayEls.forEach((el) => io.observe(el));
 
-dotsEl.addEventListener("click", (e) => {
-  const btn = e.target.closest(".dot");
+tabsEl.addEventListener("click", (e) => {
+  const btn = e.target.closest(".tab");
   if (btn) goTo(Number(btn.dataset.i));
 });
 prevBtn.addEventListener("click", () => goTo(current - 1));
@@ -234,13 +227,12 @@ checklist.addEventListener("submit", (e) => {
 const BUDDY_KEY = "milklove-buddy";
 const BUDDY_SIZE = 56;                /* 同 theme.css 的 --buddy-size */
 const BUDDY_MARGIN = 12;
-const BUDDY_BOTTOM = 44;              /* 預設位置離底部的距離，避開 iPhone 底部橫條 */
 
 const buddy = document.getElementById("buddy");
 const buddyBtn = document.getElementById("buddyBtn");
 const buddyMenu = document.getElementById("buddyMenu");
 
-let buddySide = "right";
+let buddySide = "left";               /* 預設在左邊，才不會擋到卡片右側的地圖圖示 */
 let buddyRatio = null;                /* 垂直位置佔視窗高度的比例；null＝預設位置 */
 let buddyX = 0;
 let buddyY = 0;
@@ -259,12 +251,13 @@ try {
 
 function moveBuddy(x, y) {
   buddyX = Math.max(BUDDY_MARGIN, Math.min(innerWidth - BUDDY_SIZE - BUDDY_MARGIN, x));
-  buddyY = Math.max(BUDDY_MARGIN, Math.min(innerHeight - BUDDY_SIZE - BUDDY_MARGIN, y));
+  /* 下緣停在日期列上方，拖曳時也不會蓋住日期 */
+  buddyY = Math.max(BUDDY_MARGIN, Math.min(innerHeight - tabsEl.offsetHeight - BUDDY_SIZE - BUDDY_MARGIN, y));
   buddy.style.transform = `translate(${buddyX}px, ${buddyY}px)`;
 }
 
 function placeBuddy() {
-  const y = buddyRatio === null ? innerHeight - BUDDY_SIZE - BUDDY_BOTTOM : buddyRatio * innerHeight;
+  const y = buddyRatio === null ? innerHeight : buddyRatio * innerHeight;   /* 預設位置：貼著日期列 */
   moveBuddy(buddySide === "left" ? 0 : innerWidth, y);
 }
 
