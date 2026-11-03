@@ -1,6 +1,7 @@
 # 曼谷 5 日・奶愛FC踩點之旅
 
 一頁式行程表，手機左右滑一天一頁，每個地點可以一鍵開 Google Maps 看位置或導航。
+底部的「總表」按鈕是格狀行事曆：每天分上午、下午、晚上三格，點任一項就跳到那天的詳細頁。
 
 線上版：https://nonolin1128.github.io/milklove/
 
@@ -15,13 +16,13 @@ css/
   theme.css             ← 設計設定檔：顏色、字體、字級、間距、圓角、陰影
   base.css              reset、底色、三色柔光背景
   layout.css            一天一頁的骨架：橫向日卡、頂部大圖、黏性日期條
-  components.css        行程卡、地圖按鈕、底部圓點、桌機箭頭
+  components.css        行程卡、地圖按鈕、底部圓點、桌機箭頭、總表
 js/
   trip.js               ← 行程資料：改行程只動這個檔案
   config.js             圖示、分色規則、每天輪替的主題色
   util.js               跳脫、日期格式、Google Maps 搜尋字串
   render.js             把資料畫成 HTML（純函式）
-  app.js                掛上畫面、滑動、圓點、鍵盤、hash
+  app.js                掛上畫面、滑動、圓點、鍵盤、hash、總表
 images/                 每天的頂部大圖（day1.webp…）
 ```
 

@@ -1,15 +1,17 @@
 /* ═══════════════════════════════════════════════════════════
-   app.js ── 掛上畫面、左右滑換天、圓點、鍵盤、hash
+   app.js ── 掛上畫面、左右滑換天、圓點、鍵盤、hash、總表
    ═══════════════════════════════════════════════════════════ */
 
 import { TRIP } from "./trip.js";
-import { renderDay, accentFor } from "./render.js";
+import { renderDay, renderOverview, accentFor } from "./render.js";
 import { fmtDate, todayISO } from "./util.js";
 
 const deck    = document.getElementById("deck");
 const dotsEl  = document.getElementById("dots");
 const prevBtn = document.getElementById("prev");
 const nextBtn = document.getElementById("next");
+const overview = document.getElementById("overview");
+const openOverviewBtn = document.getElementById("openOverview");
 const days    = TRIP.days || [];
 
 document.title = TRIP.title || document.title;
@@ -66,8 +68,51 @@ prevBtn.addEventListener("click", () => goTo(current - 1));
 nextBtn.addEventListener("click", () => goTo(current + 1));
 
 document.addEventListener("keydown", (e) => {
+  if (overview.open) return;          /* 總表開著時，方向鍵不要動到後面的日卡 */
   if (e.key === "ArrowLeft")  goTo(current - 1);
   if (e.key === "ArrowRight") goTo(current + 1);
+});
+
+/* 總表：每次打開都重畫，「今天」標籤才不會隔夜過期 */
+function openOverview() {
+  overview.innerHTML = renderOverview(days);
+  overview.showModal();
+
+  /* 窄螢幕放不下 5 欄，直接橫向捲到正在看的那天 */
+  const scroll = overview.querySelector(".overview__scroll");
+  const head = overview.querySelector(`[data-section="${current}"]`);
+  const corner = overview.querySelector(".ov-corner");
+  scroll.scrollLeft += head.getBoundingClientRect().left - corner.getBoundingClientRect().right;
+}
+
+/* 捲到那天的第 j 項（沒給 j 就回頂部），閃一下讓眼睛找得到 */
+function showItem(i, j) {
+  const scroller = dayEls[i].querySelector(".day__scroll");
+  const item = scroller.querySelectorAll(".item")[j];
+  if (!item) {
+    scroller.scrollTop = 0;
+    return;
+  }
+  const bar = scroller.querySelector(".daybar");
+  scroller.scrollTop += item.getBoundingClientRect().top
+    - scroller.getBoundingClientRect().top - bar.offsetHeight - 10;
+  item.classList.remove("item--flash");
+  void item.offsetWidth;              /* 強制重排，連點同一項也會重播動畫 */
+  item.classList.add("item--flash");
+}
+
+openOverviewBtn.addEventListener("click", openOverview);
+overview.addEventListener("click", (e) => {
+  if (e.target.closest("[data-close]")) {
+    overview.close();
+    return;
+  }
+  const btn = e.target.closest("[data-day]");
+  if (!btn) return;
+  overview.close();
+  const i = Number(btn.dataset.day);
+  goTo(i, false);
+  showItem(i, Number(btn.dataset.item));
 });
 
 /* 轉向或改變視窗寬度後，重新對齊到當前那天 */

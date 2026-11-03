@@ -48,6 +48,10 @@
   --fs-addr: 12.5px;                    /* 地址 */
   --fs-note: 13px;                      /* 備註 */
   --fs-act:  13px;                      /* 地圖/導航按鈕 */
+  --fs-ov-title: 18px;                  /* 總表標題 */
+  --fs-ov-head:  12.5px;                /* 總表每天的標題格 */
+  --fs-ov-time:  11px;                  /* 總表項目的時間 */
+  --fs-ov-name:  13px;                  /* 總表地點名稱 */
 
   /* ── 尺寸與間距 ──────────────────────── */
   --gutter:       16px;  /* 左右留白 */
@@ -56,6 +60,9 @@
   --icon-size:    27px;
   --tap:          44px;  /* 最小手指目標 */
   --content-max:  680px; /* 桌機內容最大寬 */
+  --ov-slot-col:  36px;  /* 總表「上午／下午／晚上」欄寬 */
+  --ov-day-min:   112px; /* 總表每天的最小欄寬：放不下就橫向捲動（手機一次約 3 天） */
+  --ov-max:       1280px;/* 總表最大寬 */
 
   --radius-card: 22px;
   --radius-icon: 9px;

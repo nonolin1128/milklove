@@ -23,7 +23,12 @@
 <button class="arrow arrow--prev" id="prev" aria-label="前一天">‹</button>
 <button class="arrow arrow--next" id="next" aria-label="後一天">›</button>
 
-<nav class="dots" id="dots" aria-label="選擇日期"></nav>
+<div class="dock">
+  <nav class="dots" id="dots" aria-label="選擇日期"></nav>
+  <button class="dock__btn" id="openOverview" aria-haspopup="dialog">總表</button>
+</div>
+
+<dialog class="overview" id="overview" aria-labelledby="overviewTitle"></dialog>
 
 <script type="module" src="js/app.js"></script>
 </body>

@@ -3,16 +3,20 @@
    純函式，不碰 DOM、不管捲動，方便單獨測
    ═══════════════════════════════════════════════════════════ */
 
-import { TYPES, TINT, ACCENTS, guessType } from "./config.js";
+import { TYPES, TINT, ACCENTS, SLOTS, guessType, slotsFor } from "./config.js";
 import { esc, fmtDate, todayISO, mapQuery, safeUrl } from "./util.js";
 
 const MAP_SEARCH = "https://www.google.com/maps/search/?api=1&query=";
 const MAP_DIR    = "https://www.google.com/maps/dir/?api=1&destination=";
 
+/* 項目的圖示與分色：有填 type 就用，沒填就照名稱猜 */
+function typeOf(item) {
+  return TYPES[TYPES[item.type] ? item.type : guessType(item.name || "")];
+}
+
 /* 一個行程項目 */
 export function renderItem(item, city) {
-  const type = TYPES[item.type] ? item.type : guessType(item.name || "");
-  const { icon, group } = TYPES[type];
+  const { icon, group } = typeOf(item);
   const q = mapQuery(item, city);
 
   /* 按鈕列：有地點就給地圖／導航，有連結就多一顆。全空則整列不出現 */
@@ -87,6 +91,67 @@ export function renderDay(day, i, tripTitle) {
         </ul>
       </div>
     </section>`;
+}
+
+/* 總表：直欄是每一天、橫列是上午／下午／晚上。每格都能點，跳到那天的詳細頁
+   類型看圖示就夠了，所以總表不分色；只有 highlight 的主要活動日用玫瑰色 */
+export function renderOverview(days) {
+  const today = todayISO();
+
+  const heads = days.map((day, i) => {
+    const { label, iso } = fmtDate(day.date);
+    return `
+          <th scope="col" data-section="${i}"${day.highlight ? ' class="ov-head--highlight"' : ""}>
+            <button class="ov-day" data-day="${i}">
+              <strong>Day ${i + 1}</strong>
+              <span>${label}</span>
+              ${day.badge ? `<span class="ov-day__tag">${esc(day.badge)}</span>` : ""}
+              ${iso === today ? `<span class="ov-day__tag">今天</span>` : ""}
+            </button>
+          </th>`;
+  }).join("");
+
+  const cell = (day, i, slot) => {
+    const items = day.items || [];
+    const slots = slotsFor(items);
+    const chips = items.map((item, j) => {
+      if (slots[j] !== slot) return "";
+      const { icon } = typeOf(item);
+      return `
+              <button class="ov-item${day.highlight ? " ov-item--highlight" : ""}" data-day="${i}" data-item="${j}">
+                <span class="ov-item__icon" aria-hidden="true">${icon}</span>
+                <span>
+                  ${item.time ? `<span class="ov-item__time">${esc(item.time)}</span>` : ""}
+                  <span class="ov-item__name">${esc(item.name)}</span>
+                </span>
+              </button>`;
+    }).join("");
+    return `
+          <td>${chips}
+          </td>`;
+  };
+
+  const rows = SLOTS.map((name, slot) => `
+        <tr>
+          <th scope="row" class="ov-slot">${name}</th>${days.map((day, i) => cell(day, i, slot)).join("")}
+        </tr>`).join("");
+
+  return `
+    <header class="overview__head">
+      <h2 class="overview__title" id="overviewTitle">行程總表</h2>
+      <button class="overview__close" data-close aria-label="關閉總表">✕</button>
+    </header>
+    <div class="overview__scroll">
+      <table class="ov-table" style="--ov-days:${days.length}">
+        <thead>
+          <tr>
+            <td class="ov-corner"></td>${heads}
+          </tr>
+        </thead>
+        <tbody>${rows}
+        </tbody>
+      </table>
+    </div>`;
 }
 
 /* 主要活動日強制用粉，其餘三色輪替 */
