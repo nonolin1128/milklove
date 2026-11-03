@@ -217,7 +217,8 @@ export const TRIP = {
     ] },
     { icon: "📌", title: "有空再去", items: [
       { name: "換錢" },
-      { name: "Central World 逛香水", address: "CentralWorld, Bangkok" },
+      { name: "Central World 逛香水（Sundalo）", address: "Sundalo, CentralWorld, Bangkok",
+        coords: "13.7468548,100.538765" },
     ] },
   ],
 };
