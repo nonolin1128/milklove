@@ -349,6 +349,26 @@ function initialIndex() {
 }
 goTo(initialIndex(), false);
 
+/* 安裝按鈕：瀏覽器判定可以安裝時才會發這個事件，所以 iPhone 和已安裝的手機看不到按鈕 */
+const installBtn = document.getElementById("installApp");
+let installPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  installBtn.hidden = false;
+});
+installBtn.addEventListener("click", () => {
+  /* 一個事件只能跳一次視窗；取消的話，之後重新打開網站才會再出現 */
+  installPrompt?.prompt();
+  installPrompt = null;
+  installBtn.hidden = true;
+});
+window.addEventListener("appinstalled", () => {
+  installPrompt = null;
+  installBtn.hidden = true;
+});
+
 /* 離線用的 Service Worker；註冊失敗只是不能離線，網站照常 */
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
