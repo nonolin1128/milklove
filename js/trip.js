@@ -26,6 +26,10 @@
                直式照片一定要給，不然置中裁切會把臉切掉
      highlight true = 主要活動日，強制粉色 + 柔光
      badge     大圖上的小標籤
+
+   checklist（在最下面）：底部「清單」按鈕的內容
+     每區 icon / title / items；項目的 name、address 同上，有 address 就有地圖按鈕
+     打勾記錄用 name 當鑰匙，所以改名字後要重勾
    ═══════════════════════════════════════════════════════════ */
 
 export const TRIP = {
@@ -191,5 +195,22 @@ export const TRIP = {
           note: "看奶愛！！！！！！" },
       ],
     },
+  ],
+
+  checklist: [
+    { icon: "🛒", title: "要買的", items: [
+      { name: "泰奶粉" },
+      { name: "胡椒粉" },
+      { name: "蛇牌涼感噴霧" },
+      { name: "英法咖啡豆" },
+      { name: "小愛代言的洗面乳" },
+      { name: "冬蔭功泡麵" },
+      { name: "船麵泡麵" },
+      { name: "榴槤乾" },
+    ] },
+    { icon: "📌", title: "有空再去", items: [
+      { name: "換錢" },
+      { name: "Central World 逛香水", address: "CentralWorld, Bangkok" },
+    ] },
   ],
 };

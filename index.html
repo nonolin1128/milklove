@@ -23,12 +23,20 @@
 <button class="arrow arrow--prev" id="prev" aria-label="前一天">‹</button>
 <button class="arrow arrow--next" id="next" aria-label="後一天">›</button>
 
-<div class="dock">
-  <nav class="dots" id="dots" aria-label="選擇日期"></nav>
-  <button class="dock__btn" id="openOverview" aria-haspopup="dialog">總表</button>
+<nav class="dots" id="dots" aria-label="選擇日期"></nav>
+
+<div class="buddy" id="buddy">
+  <button class="buddy__face" id="buddyBtn" aria-label="開啟選單" aria-haspopup="menu" aria-expanded="false">
+    <img src="images/muvmuv-head.webp" alt="" draggable="false">
+  </button>
+  <div class="buddy__menu" id="buddyMenu" role="menu" hidden>
+    <button class="buddy__item" id="openOverview" role="menuitem" aria-haspopup="dialog">📅 總表</button>
+    <button class="buddy__item" id="openChecklist" role="menuitem" aria-haspopup="dialog">🛒 購物清單</button>
+  </div>
 </div>
 
 <dialog class="overview" id="overview" aria-labelledby="overviewTitle"></dialog>
+<dialog class="checklist" id="checklist" aria-labelledby="checklistTitle"></dialog>
 
 <script type="module" src="js/app.js"></script>
 </body>

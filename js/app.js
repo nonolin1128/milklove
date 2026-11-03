@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   app.js ── 掛上畫面、左右滑換天、圓點、鍵盤、hash、總表
+   app.js ── 掛上畫面、左右滑換天、圓點、鍵盤、hash、總表、清單、浮動小狗
    ═══════════════════════════════════════════════════════════ */
 
 import { TRIP } from "./trip.js";
-import { renderDay, renderOverview, accentFor } from "./render.js";
+import { renderDay, renderOverview, renderChecklist, accentFor } from "./render.js";
 import { fmtDate, todayISO } from "./util.js";
 
 const deck    = document.getElementById("deck");
@@ -12,6 +12,8 @@ const prevBtn = document.getElementById("prev");
 const nextBtn = document.getElementById("next");
 const overview = document.getElementById("overview");
 const openOverviewBtn = document.getElementById("openOverview");
+const checklist = document.getElementById("checklist");
+const openChecklistBtn = document.getElementById("openChecklist");
 const days    = TRIP.days || [];
 
 document.title = TRIP.title || document.title;
@@ -68,7 +70,7 @@ prevBtn.addEventListener("click", () => goTo(current - 1));
 nextBtn.addEventListener("click", () => goTo(current + 1));
 
 document.addEventListener("keydown", (e) => {
-  if (overview.open) return;          /* 總表開著時，方向鍵不要動到後面的日卡 */
+  if (overview.open || checklist.open) return;   /* 跳窗開著時，方向鍵不要動到後面的日卡 */
   if (e.key === "ArrowLeft")  goTo(current - 1);
   if (e.key === "ArrowRight") goTo(current + 1);
 });
@@ -116,6 +118,139 @@ overview.addEventListener("click", (e) => {
   goTo(i, false);
   showItem(i, Number(btn.dataset.item));
 });
+
+/* 清單的打勾記錄存在這支手機；私密模式等情況讀寫會失敗，那就只是記不住 */
+const CHECK_KEY = "milklove-checked";
+
+function loadChecked() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(CHECK_KEY)) || []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveChecked(checked) {
+  try {
+    localStorage.setItem(CHECK_KEY, JSON.stringify([...checked]));
+  } catch {
+    /* 存不了就算了，畫面上的勾勾還在 */
+  }
+}
+
+openChecklistBtn.addEventListener("click", () => {
+  checklist.innerHTML = renderChecklist(TRIP.checklist || [], loadChecked());
+  checklist.showModal();
+});
+checklist.addEventListener("click", (e) => {
+  /* 點到跳窗外的暗色背景時，target 會是 dialog 本身 */
+  if (e.target === checklist || e.target.closest("[data-close]")) checklist.close();
+});
+checklist.addEventListener("change", (e) => {
+  const checked = loadChecked();
+  if (e.target.checked) checked.add(e.target.dataset.name);
+  else checked.delete(e.target.dataset.name);
+  saveChecked(checked);
+});
+
+/* 浮動小狗：拖到哪就貼齊最近的左右邊，位置記在這支手機；點一下開選單 */
+const BUDDY_KEY = "milklove-buddy";
+const BUDDY_SIZE = 56;                /* 同 theme.css 的 --buddy-size */
+const BUDDY_MARGIN = 12;
+const BUDDY_BOTTOM = 44;              /* 預設位置離底部的距離，避開 iPhone 底部橫條 */
+
+const buddy = document.getElementById("buddy");
+const buddyBtn = document.getElementById("buddyBtn");
+const buddyMenu = document.getElementById("buddyMenu");
+
+let buddySide = "right";
+let buddyRatio = null;                /* 垂直位置佔視窗高度的比例；null＝預設位置 */
+let buddyX = 0;
+let buddyY = 0;
+let press = null;
+let justDragged = false;
+
+try {
+  const saved = JSON.parse(localStorage.getItem(BUDDY_KEY));
+  if (saved && (saved.side === "left" || saved.side === "right") && typeof saved.ratio === "number") {
+    buddySide = saved.side;
+    buddyRatio = saved.ratio;
+  }
+} catch {
+  /* 讀不到就用預設位置 */
+}
+
+function moveBuddy(x, y) {
+  buddyX = Math.max(BUDDY_MARGIN, Math.min(innerWidth - BUDDY_SIZE - BUDDY_MARGIN, x));
+  buddyY = Math.max(BUDDY_MARGIN, Math.min(innerHeight - BUDDY_SIZE - BUDDY_MARGIN, y));
+  buddy.style.transform = `translate(${buddyX}px, ${buddyY}px)`;
+}
+
+function placeBuddy() {
+  const y = buddyRatio === null ? innerHeight - BUDDY_SIZE - BUDDY_BOTTOM : buddyRatio * innerHeight;
+  moveBuddy(buddySide === "left" ? 0 : innerWidth, y);
+}
+
+function setBuddyMenu(open) {
+  if (open) {
+    buddyMenu.dataset.side = buddySide;
+    buddyMenu.dataset.up = String(buddyY > innerHeight / 2);
+  }
+  buddyMenu.hidden = !open;
+  buddyBtn.setAttribute("aria-expanded", String(open));
+}
+
+buddyBtn.addEventListener("pointerdown", (e) => {
+  justDragged = false;
+  press = { id: e.pointerId, startX: e.clientX, startY: e.clientY, x: buddyX, y: buddyY, moved: false };
+  buddyBtn.setPointerCapture(e.pointerId);
+  buddy.classList.remove("buddy--snap");
+});
+buddyBtn.addEventListener("pointermove", (e) => {
+  if (!press || e.pointerId !== press.id) return;
+  const dx = e.clientX - press.startX;
+  const dy = e.clientY - press.startY;
+  if (!press.moved && Math.hypot(dx, dy) < 6) return;   /* 手指抖一下不算拖曳 */
+  press.moved = true;
+  setBuddyMenu(false);
+  moveBuddy(press.x + dx, press.y + dy);
+});
+buddyBtn.addEventListener("pointerup", (e) => {
+  if (!press || e.pointerId !== press.id) return;
+  if (press.moved) {
+    justDragged = true;               /* 放開後瀏覽器可能補一個 click，別讓它開選單 */
+    buddySide = buddyX + BUDDY_SIZE / 2 < innerWidth / 2 ? "left" : "right";
+    buddyRatio = buddyY / innerHeight;
+    buddy.classList.add("buddy--snap");
+    placeBuddy();
+    try {
+      localStorage.setItem(BUDDY_KEY, JSON.stringify({ side: buddySide, ratio: buddyRatio }));
+    } catch {
+      /* 存不了就算了，只是下次回到預設位置 */
+    }
+  }
+  press = null;
+});
+buddyBtn.addEventListener("pointercancel", () => {
+  press = null;
+  placeBuddy();
+});
+buddyBtn.addEventListener("click", () => {
+  if (justDragged) {
+    justDragged = false;
+    return;
+  }
+  setBuddyMenu(buddyMenu.hidden);
+});
+buddyMenu.addEventListener("click", () => setBuddyMenu(false));
+document.addEventListener("pointerdown", (e) => {
+  if (!buddy.contains(e.target)) setBuddyMenu(false);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") setBuddyMenu(false);
+});
+window.addEventListener("resize", placeBuddy);
+placeBuddy();
 
 /* 轉向或改變視窗寬度後，重新對齊到當前那天 */
 let rsz;

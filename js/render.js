@@ -178,6 +178,39 @@ export function renderOverview(days) {
     </div>`;
 }
 
+/* 清單跳窗：checked 是已打勾的名字（Set） */
+export function renderChecklist(sections, checked) {
+  const row = (item) => {
+    const q = mapQuery(item, "");
+    return `
+          <li class="check">
+            <label class="check__label">
+              <input type="checkbox" data-name="${esc(item.name)}"${checked.has(item.name) ? " checked" : ""}>
+              <span>${esc(item.name)}</span>
+            </label>
+            ${item.address && q ? `<div class="acts">
+              <a class="act" target="_blank" rel="noopener" href="${MAP_SEARCH}${q}">📍 地圖</a>
+              <a class="act act--primary" target="_blank" rel="noopener" href="${MAP_DIR}${q}">🧭 導航</a>
+            </div>` : ""}
+          </li>`;
+  };
+
+  const blocks = sections.map((s) => `
+      <section class="checklist__section">
+        <h3 class="checklist__heading"><span aria-hidden="true">${s.icon}</span> ${esc(s.title)}</h3>
+        <ul>${s.items.map(row).join("")}
+        </ul>
+      </section>`).join("");
+
+  return `
+    <header class="overview__head">
+      <h2 class="overview__title" id="checklistTitle">清單</h2>
+      <button class="overview__close" data-close aria-label="關閉清單">✕</button>
+    </header>
+    <div class="checklist__body">${blocks}
+    </div>`;
+}
+
 /* 主要活動日強制用粉，其餘三色輪替 */
 export function accentFor(day, i) {
   return day && day.highlight ? ACCENTS[0] : ACCENTS[i % ACCENTS.length];

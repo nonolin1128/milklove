@@ -59,6 +59,7 @@
   --time-col:     52px;  /* 時間欄寬（決定所有列的左緣對齊） */
   --icon-size:    27px;
   --tap:          44px;  /* 最小手指目標 */
+  --buddy-size:   56px;  /* 浮動小狗大小，js/app.js 的 BUDDY_SIZE 要一起改 */
   --content-max:  680px; /* 桌機內容最大寬 */
   --ov-slot-col:  36px;  /* 總表「上午／下午／晚上」欄寬 */
   --ov-day-min:   112px; /* 總表每天的最小欄寬：放不下就橫向捲動（手機一次約 3 天） */
