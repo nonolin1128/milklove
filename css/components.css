@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   components.css ── 行程卡、地圖按鈕、底部圓點、桌機箭頭
+   components.css ── 行程卡、地圖按鈕、底部圓點、桌機箭頭、總表、清單、浮動小狗
    ═══════════════════════════════════════════════════════════ */
 
 /* ── 行程列表 ──────────────────────────── */
@@ -94,6 +94,77 @@
   .act:hover { background: var(--accent); }
 }
 
+/* 一組行程：可展開的卡片，裡面的每一站不再有自己的卡片外框 */
+.group__head {
+  min-height: var(--tap);
+  margin: -8px 0;
+  cursor: pointer;
+  list-style: none;
+}
+.group__head::-webkit-details-marker { display: none; }
+.group__head::after {
+  content: "▾";
+  margin-left: 4px;
+  transition: transform .15s;
+}
+.group[open] .group__head::after { transform: rotate(180deg); }
+.group__count {
+  margin-left: auto;
+  font-size: var(--fs-addr);
+  font-weight: 500;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.group__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-top: 16px;
+  border-radius: var(--radius-note);
+  object-fit: cover;
+}
+.group__stops { margin-top: 8px; }
+.group__stops .item {
+  grid-template-columns: 1fr;
+  gap: 4px;
+  padding: 14px 0 6px;
+  border-top: 1px solid var(--hairline);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.group__stops .item__time:empty { display: none; }
+.group__stops .item__time { padding-top: 0; }
+
+/* 備選（可去可不去）：卡片變淡、改虛線框，文字維持 --ink 才讀得清楚 */
+.item--optional {
+  background: #FFFFFF80;
+  box-shadow: none;
+  outline: 1.5px dashed #4A443F33;
+  outline-offset: -1.5px;
+}
+.item--optional .item__name { font-weight: 500; }
+.tag-optional {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border: 1px solid #4A443F33;
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* 從總表跳過來時閃一下，標出是哪一項 */
+.item--flash { animation: item-flash 1.2s ease-out; }
+@keyframes item-flash {
+  0%, 40% { outline: 3px solid var(--accent-deep); outline-offset: 1px; }
+  100%    { outline: 3px solid transparent; outline-offset: 1px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .item--flash { animation: none; }
+}
+
 /* ── 底部圓點 ──────────────────────────── */
 .dots {
   position: fixed;
@@ -152,4 +223,317 @@
   .arrow--prev { left: 18px; }
   .arrow--next { right: 18px; }
   .arrow[disabled] { opacity: .3; cursor: default; }
+}
+
+/* ── 總表 ──────────────────────────────── */
+/* 只在 [open] 時設 display：沒開的時候要靠 <dialog> 預設的 display:none 藏起來 */
+.overview {
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--cream);
+  color: var(--ink);
+  overflow: hidden;
+}
+.overview[open] { display: flex; flex-direction: column; }
+.overview__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(6px + env(safe-area-inset-top)) 6px 6px 20px;
+  border-bottom: 1px solid var(--hairline);
+}
+.overview__title { margin: 0; font-size: var(--fs-ov-title); font-weight: 800; }
+.overview__close {
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* 表格只有這一個捲動容器，日期列和時段欄才能同時黏住 */
+.overview__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.ov-table {
+  width: 100%;
+  min-width: calc(var(--ov-slot-col) + var(--ov-days) * var(--ov-day-min));
+  max-width: var(--ov-max);
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+.ov-table thead th,
+.ov-corner {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 0;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--cream);
+  vertical-align: top;
+}
+.ov-table thead th.ov-head--highlight { background: var(--rose); }
+.ov-corner {
+  left: 0;
+  z-index: 3;
+  width: var(--ov-slot-col);
+}
+.ov-day {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  width: 100%;
+  min-height: var(--tap);
+  padding: 8px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-ov-head);
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  cursor: pointer;
+}
+.ov-day strong { flex-basis: 100%; font-size: var(--fs-name); font-weight: 800; }
+.ov-day__tag {
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--card);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+.ov-slot {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  padding: 14px 0 0;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--cream);
+  font-size: var(--fs-ov-time);
+  font-weight: 700;
+  color: var(--ink-soft);
+  vertical-align: top;
+}
+.ov-table td:not(.ov-corner) {
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+}
+/* 圖示獨立一欄：名字換行時第二行才會和第一行對齊 */
+.ov-item {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-content: center;
+  gap: 5px;
+  width: 100%;
+  min-height: var(--tap);
+  margin-bottom: 6px;
+  padding: 6px 7px;
+  border: 0;
+  border-radius: var(--radius-note);
+  background: var(--card);              /* 白卡片配奶油底，和詳細頁同一套 */
+  box-shadow: 0 1px 4px #4A443F21;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ov-item:last-child { margin-bottom: 0; }
+.ov-item--highlight {
+  background: var(--rose);
+  font-weight: 700;
+}
+.ov-item--optional {
+  background: none;
+  box-shadow: none;
+  outline: 1.5px dashed #4A443F33;
+  outline-offset: -1.5px;
+}
+.ov-item--optional .tag-optional { display: inline-block; margin-top: 3px; }
+.ov-item__icon { font-size: 13px; line-height: 1.35; }
+.ov-item__time {
+  display: block;
+  font-size: var(--fs-ov-time);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+.ov-item--highlight .ov-item__time { color: var(--ink); }  /* 灰字壓在玫瑰色上太淡 */
+.ov-item__name {
+  display: block;
+  font-size: var(--fs-ov-name);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+@media (hover: hover) {
+  .ov-item:not(.ov-item--highlight):hover { background: var(--note-bg); }
+}
+
+/* ── 清單跳窗 ──────────────────────────── */
+.checklist {
+  width: min(100% - 32px, 440px);
+  max-width: none;
+  max-height: 84dvh;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: var(--cream);
+  color: var(--ink);
+  overflow: hidden;
+}
+.checklist[open] { display: flex; flex-direction: column; }
+.checklist::backdrop { background: #4A443F66; }
+.checklist__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px var(--gutter) 20px;
+}
+.checklist__heading {
+  margin: 16px 0 6px;
+  font-size: var(--fs-date);
+  font-weight: 800;
+}
+.check { border-bottom: 1px solid var(--hairline); }
+.check__row { display: flex; align-items: center; gap: 4px; }
+.check__label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  overflow-wrap: anywhere;
+  font-size: var(--fs-name);
+  cursor: pointer;
+}
+.check__label input {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--rose-deep);
+}
+.check__label input:checked + span {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+.check .acts { margin: 0 0 12px 30px; }
+
+/* ── 浮動小狗：可拖曳，點一下開選單 ─────── */
+/* 位置由 js/app.js 用 transform 設定 */
+.buddy {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 25;
+}
+.buddy--snap { transition: transform .2s ease-out; }
+.buddy__face {
+  display: block;
+  width: var(--buddy-size);
+  height: var(--buddy-size);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;              /* 按在牠身上是拖曳，不是左右滑換天 */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.buddy__face:active { cursor: grabbing; }
+.buddy__face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 5px #4A443F66);
+  pointer-events: none;
+}
+/* 選單往畫面內側開，由 js/app.js 依位置設 data-side、data-up */
+.buddy__menu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 132px;
+  padding: 6px;
+  border-radius: var(--radius-note);
+  background: var(--card);
+  box-shadow: var(--shadow-float);
+}
+.buddy__menu[hidden] { display: none; }
+.buddy__menu[data-side="left"]  { left: 0; }
+.buddy__menu[data-side="right"] { right: 0; }
+.buddy__menu[data-up="true"]    { bottom: calc(var(--buddy-size) + 6px); }
+.buddy__menu[data-up="false"]   { top: calc(var(--buddy-size) + 6px); }
+.buddy__item {
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-icon);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-name);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+@media (hover: hover) {
+  .buddy__item:hover { background: var(--note-bg); }
+}
+.check__remove {
+  flex: 0 0 auto;
+  width: var(--tap);
+  height: var(--tap);
+  margin-right: -12px;
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 13px;
+  cursor: pointer;
+}
+.check__add { display: flex; gap: 8px; margin-top: 10px; }
+.check__input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 1px solid #4A443F33;
+  border-radius: var(--radius-note);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;                 /* 小於 16px 時 iOS 點進去會自動放大畫面 */
+}
+.check__submit {
+  flex: 0 0 auto;
+  min-height: var(--tap);
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-note);
+  background: var(--accent);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-act);
+  font-weight: 700;
+  cursor: pointer;
 }

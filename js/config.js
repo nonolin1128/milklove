@@ -21,6 +21,7 @@ export const TYPES = {
   shop:   { icon: "🛍", group: "other" },
   spa:    { icon: "💆", group: "other" },
   show:   { icon: "🎟",  group: "other" },
+  tour:   { icon: "🌸", group: "other" },
   other:  { icon: "📍", group: "other" },
 };
 
@@ -65,3 +66,26 @@ export function guessType(name) {
 
 /* 給驗證腳本用：合法的 type 清單 */
 export const VALID_TYPES = Object.keys(TYPES);
+
+/* 總表的時段 */
+export const SLOTS = ["上午", "下午", "晚上"];
+
+/* 時刻或時段詞 → 第幾個時段；看不出來（留空、「點心」）回傳 null */
+function slotOfTime(time) {
+  const clock = /^(\d{1,2}):/.exec(time);
+  if (clock) {
+    const h = Number(clock[1]);
+    return h < 12 ? 0 : h < 18 ? 1 : 2;
+  }
+  if (/上午|早/.test(time)) return 0;
+  if (/午/.test(time)) return 1;      /* 午餐、下午茶 */
+  if (/晚|夜/.test(time)) return 2;   /* 傍晚、晚餐、宵夜 */
+  return null;
+}
+
+/* 一天的每個項目各屬於哪個時段
+   行程是照先後排的，所以看不出時段的項目就跟著上一項 */
+export function slotsFor(items) {
+  let slot = 0;
+  return items.map((item) => (slot = slotOfTime(item.time || "") ?? slot));
+}

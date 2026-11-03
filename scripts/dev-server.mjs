@@ -24,6 +24,7 @@ const MIME = {
   ".js":   "text/javascript; charset=utf-8",
   ".mjs":  "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".webmanifest": "application/manifest+json; charset=utf-8",
   ".txt":  "text/plain; charset=utf-8",
   ".md":   "text/markdown; charset=utf-8",
   ".svg":  "image/svg+xml",
@@ -39,7 +40,8 @@ const MIME = {
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
-    let rel = decodeURIComponent(url.pathname);
+    /* 線上網址在 /milklove/ 底下（例如 404 頁的返回連結），本機也要認得 */
+    let rel = decodeURIComponent(url.pathname).replace(/^\/milklove(?=\/|$)/, "");
 
     /* 擋掉 ../ 跳出專案資料夾 */
     rel = normalize(rel).replace(/^(\.\.[/\\])+/, "");
