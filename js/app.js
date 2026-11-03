@@ -240,7 +240,7 @@ const buddy = document.getElementById("buddy");
 const buddyBtn = document.getElementById("buddyBtn");
 const buddyMenu = document.getElementById("buddyMenu");
 
-let buddySide = "right";
+let buddySide = "left";               /* 預設在左邊，才不會擋到卡片右側的地圖圖示 */
 let buddyRatio = null;                /* 垂直位置佔視窗高度的比例；null＝預設位置 */
 let buddyX = 0;
 let buddyY = 0;

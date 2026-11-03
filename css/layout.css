@@ -37,8 +37,8 @@
 .hero {
   position: relative;
   width: 100%;                      /* 明確給寬度：不然 max-height 會透過 aspect-ratio 反推出寬度上限，大圖縮在左邊 */
-  aspect-ratio: 16 / 9;
-  min-height: 188px;
+  aspect-ratio: 2 / 1;
+  min-height: 170px;
   max-height: 44dvh;
   overflow: hidden;
 }
@@ -56,7 +56,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, var(--cream) 1%, #FFFBF700 48%);
+  background: linear-gradient(to top, var(--cream) 2%, #FFFBF7b3 26%, #FFFBF700 56%);
 }
 
 .hero__text {
@@ -124,6 +124,9 @@
 
 /* 桌機：內容置中不要拉得太寬 */
 @media (min-width: 880px) {
+  /* 大圖又寬又扁，人臉靠近底部，漸層太濃會把臉蓋掉 */
+  .hero::after { background: linear-gradient(to top, var(--cream) 1%, #FFFBF700 40%); }
+
   .hero__text {
     left: 50%;
     right: auto;

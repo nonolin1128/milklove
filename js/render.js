@@ -83,9 +83,8 @@ export function renderDay(day, i) {
   const a = accentFor(day, i);
   const { label, iso } = fmtDate(day.date);
   const n = i + 1;
-  const where = day.city ? " · " + esc(day.city) : "";
 
-  /* focus 決定 16:9 裁切時保住畫面的哪一段（直式照片一定要給，
+  /* focus 決定 2:1 裁切時保住畫面的哪一段（直式照片一定要給，
      不然置中裁切會把臉和招牌切掉）。沒給就置中。 */
   const hero = day.image
     ? `<img src="${esc(day.image)}" alt="Day ${n} ${esc(day.city || "")}"
@@ -109,7 +108,7 @@ export function renderDay(day, i) {
         </header>
         <div class="daybar">
           <span class="daybar__dot" aria-hidden="true"></span>
-          <span>Day ${n} · ${label}${where}</span>
+          <span>Day ${n} · ${label}</span>
           ${iso === todayISO() ? `<span class="daybar__today">今天</span>` : ""}
         </div>
         <ul class="items">${(day.items || []).map((it) => renderItem(it, day.city)).join("")}
