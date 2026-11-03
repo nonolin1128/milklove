@@ -21,6 +21,7 @@
 
    每天的欄位：
      date / city / items
+     area      當天的區域，顯示在大圖的 DAY 數字下面
      image     頂部大圖（例 "images/day1.webp"），留空用純色漸層
      focus     大圖在 16:9 裁切時的垂直對齊（"10%" = 靠上）
                直式照片一定要給，不然置中裁切會把臉切掉
@@ -40,6 +41,7 @@ export const TRIP = {
     {
       date: "2026-11-11",
       city: "曼谷",
+      area: "老城區",
       image: "images/day1.webp",
       items: [
         { time: "16:45", type: "flight", name: "抵達曼谷", nomap: true },
@@ -56,6 +58,7 @@ export const TRIP = {
     {
       date: "2026-11-12",
       city: "曼谷",
+      area: "老城區",
       image: "images/day2.webp",
       focus: "20%",            /* 保住上排最高那顆頭 */
       items: [
@@ -103,6 +106,7 @@ export const TRIP = {
     {
       date: "2026-11-13",
       city: "曼谷",
+      area: "素坤逸 Asok",
       image: "images/day3.webp",
       focus: "55%",            /* 直式照：對準人臉和玩偶的臉，招牌和下半身讓它裁掉 */
       items: [
@@ -139,6 +143,7 @@ export const TRIP = {
     {
       date: "2026-11-14",
       city: "曼谷",
+      area: "Ari・Saphan Khwai",
       image: "images/day4.webp",
       items: [
         { time: "07:00", type: "food", name: "BARTELS", address: "Bartels, Bangkok",
@@ -186,6 +191,7 @@ export const TRIP = {
     {
       date: "2026-11-15",
       city: "曼谷",
+      area: "Ladprao",
       image: "images/day5.webp",
       focus: "10%",            /* 直式海報：保住標題和兩個人，底部售票資訊讓它裁掉 */
       highlight: true,

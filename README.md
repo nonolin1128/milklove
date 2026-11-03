@@ -25,8 +25,10 @@ js/
   config.js             圖示、分色規則、每天輪替的主題色
   util.js               跳脫、日期格式、Google Maps 搜尋字串
   render.js             把資料畫成 HTML（純函式）
-  app.js                掛上畫面、滑動、圓點、鍵盤、hash、總表、清單、浮動小狗
-images/                 每天的頂部大圖（day1.webp…）
+  app.js                掛上畫面、滑動、圓點、鍵盤、hash、總表、清單、浮動小狗、離線
+images/                 每天的頂部大圖（day1.webp…）、照片、圖示
+manifest.webmanifest    App 名稱、圖示：加到主畫面用
+sw.js                   Service Worker：斷網也能打開。新增圖片要更新它的 PRECACHE
 ```
 
 平常只會動兩個檔案：**改行程 → `js/trip.js`**，**改外觀 → `css/theme.css`**。
@@ -81,6 +83,11 @@ server 是 `scripts/dev-server.mjs`，只用 Node 內建模組寫的，**零依�
 
 放進 `images/`，在 `js/trip.js` 用 `image: "images/day1.webp"` 指定。
 先壓再放：寬 1200px、WebP、每張 150KB 以下。沒給圖的那天會自動用純色漸層。
+
+## 裝到手機、離線使用
+
+線上版用手機 Chrome 打開，右上角 ⋮ →「安裝應用程式」（或「加到主畫面」）。
+連網打開過一次後，行程、總表、清單、照片斷網也能看；地圖、導航、IG 連結仍然要網路。
 
 ## 部署
 

@@ -22,5 +22,5 @@ jobs:
           node-version: '22'
       - name: 檢查 JavaScript 語法
         run: |
-          find js scripts -type f \( -name '*.js' -o -name '*.mjs' \) \
+          find js scripts sw.js -type f \( -name '*.js' -o -name '*.mjs' \) \
             -exec sh -c 'for file do node --check "$file" || exit 1; done' sh {} +

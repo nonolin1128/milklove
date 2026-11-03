@@ -77,7 +77,7 @@ export function renderItem(item, city) {
 }
 
 /* 一天一張卡 */
-export function renderDay(day, i, tripTitle) {
+export function renderDay(day, i) {
   const a = accentFor(day, i);
   const { label, iso } = fmtDate(day.date);
   const n = i + 1;
@@ -98,11 +98,9 @@ export function renderDay(day, i, tripTitle) {
         <header class="hero${day.image ? "" : " hero--blank"}">
           ${hero}
           <div class="hero__text">
-            <div class="hero__trip">${esc(tripTitle)}</div>
             <div class="hero__day">DAY ${n}</div>
-            <div class="hero__date">${label}${where}${
-              day.badge ? `<span class="hero__badge">${esc(day.badge)}</span>` : ""
-            }</div>
+            ${day.area ? `<div class="hero__area">${esc(day.area)}</div>` : ""}
+            ${day.badge ? `<span class="hero__badge">${esc(day.badge)}</span>` : ""}
           </div>
         </header>
         <div class="daybar">

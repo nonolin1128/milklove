@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   app.js ── 掛上畫面、左右滑換天、圓點、鍵盤、hash、總表、清單、浮動小狗
+   app.js ── 掛上畫面、左右滑換天、圓點、鍵盤、hash、總表、清單、浮動小狗、離線
    ═══════════════════════════════════════════════════════════ */
 
 import { TRIP } from "./trip.js";
@@ -18,7 +18,7 @@ const days    = TRIP.days || [];
 
 document.title = TRIP.title || document.title;
 
-deck.innerHTML = days.map((d, i) => renderDay(d, i, TRIP.title)).join("");
+deck.innerHTML = days.map((d, i) => renderDay(d, i)).join("");
 dotsEl.innerHTML = days
   .map((d, i) => `<button class="dot" data-i="${i}" aria-label="Day ${i + 1}"></button>`)
   .join("");
@@ -348,3 +348,8 @@ function initialIndex() {
   return i >= 0 ? i : 0;
 }
 goTo(initialIndex(), false);
+
+/* 離線用的 Service Worker；註冊失敗只是不能離線，網站照常 */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}

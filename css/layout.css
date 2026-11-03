@@ -66,11 +66,6 @@
   right: var(--gutter);
   bottom: 12px;
 }
-.hero__trip {
-  font-size: var(--fs-trip);
-  letter-spacing: .16em;
-  color: var(--ink-soft);
-}
 .hero__day {
   margin: 3px 0 5px;
   font-size: var(--fs-day);
@@ -78,20 +73,18 @@
   letter-spacing: -.02em;
   line-height: 1;
 }
-.hero__date {
+.hero__area {
   font-size: var(--fs-date);
-  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 .hero__badge {
   display: inline-block;
-  margin-left: 8px;
   padding: 3px 11px;
   border-radius: var(--radius-pill);
   background: var(--accent);
   box-shadow: 0 0 0 5px #FBD4D159; /* 主要活動日的柔光 */
   font-size: 12px;
   font-weight: 700;
-  vertical-align: 2px;
 }
 
 /* ── 捲動後黏在頂部的日期條 ─────────────── */

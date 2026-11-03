@@ -39,7 +39,6 @@
                "Hiragino Sans", "Microsoft JhengHei", sans-serif;
 
   /* ── 字級 ────────────────────────────── */
-  --fs-trip: 11px;                      /* 大圖上的行程名 */
   --fs-day:  clamp(34px, 11vw, 46px);   /* DAY N */
   --fs-date: 15px;                      /* 日期 */
   --fs-bar:  13px;                      /* 黏性日期條 */
