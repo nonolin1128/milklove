@@ -9,13 +9,35 @@ import { esc, fmtDate, todayISO, mapQuery, safeUrl } from "./util.js";
 const MAP_SEARCH = "https://www.google.com/maps/search/?api=1&query=";
 const MAP_DIR    = "https://www.google.com/maps/dir/?api=1&destination=";
 
-/* 項目的圖示與分色：有填 type 就用，沒填就照名稱猜 */
+/* 項目的圖示與分色：有填 type 就用，沒填就照名稱猜；icon 可以單獨覆寫圖示 */
 function typeOf(item) {
-  return TYPES[TYPES[item.type] ? item.type : guessType(item.name || "")];
+  const type = TYPES[TYPES[item.type] ? item.type : guessType(item.name || "")];
+  return { ...type, icon: item.icon || type.icon };
+}
+
+/* 一組行程：收成一張卡片，點開才看到照片和每一站 */
+function renderGroup(item, city) {
+  const { icon, group } = typeOf(item);
+  return `
+      <li class="item">
+        <div class="item__time">${esc(item.time || "")}</div>
+        <details class="group">
+          <summary class="item__name group__head">
+            <span class="item__icon" style="--tint:${TINT[group]}" aria-hidden="true">${icon}</span>
+            <span>${esc(item.name)}</span>
+            <span class="group__count">${item.stops.length} 項</span>
+          </summary>
+          ${item.image ? `<img class="group__img" src="${esc(item.image)}" alt="${esc(item.name)}"
+                style="object-position:center ${esc(item.focus || "center")}" loading="lazy" decoding="async">` : ""}
+          <ul class="group__stops">${item.stops.map((stop) => renderItem(stop, city)).join("")}
+          </ul>
+        </details>
+      </li>`;
 }
 
 /* 一個行程項目 */
 export function renderItem(item, city) {
+  if (item.stops) return renderGroup(item, city);
   const { icon, group } = typeOf(item);
   const q = mapQuery(item, city);
 
@@ -39,12 +61,13 @@ export function renderItem(item, city) {
     : "";
 
   return `
-      <li class="item">
+      <li class="item${item.optional ? " item--optional" : ""}">
         <div class="item__time">${esc(item.time || "")}</div>
         <div>
           <div class="item__name">
             <span class="item__icon" style="--tint:${TINT[group]}" aria-hidden="true">${icon}</span>
             <span>${esc(item.name)}</span>
+            ${item.optional ? `<span class="tag-optional">備選</span>` : ""}
           </div>
           ${item.address ? `<div class="item__addr">${esc(item.address)}</div>` : ""}
           ${item.note ? `<div class="item__note">${esc(item.note)}</div>` : ""}
@@ -118,11 +141,12 @@ export function renderOverview(days) {
       if (slots[j] !== slot) return "";
       const { icon } = typeOf(item);
       return `
-              <button class="ov-item${day.highlight ? " ov-item--highlight" : ""}" data-day="${i}" data-item="${j}">
+              <button class="ov-item${day.highlight ? " ov-item--highlight" : ""}${item.optional ? " ov-item--optional" : ""}" data-day="${i}" data-item="${j}">
                 <span class="ov-item__icon" aria-hidden="true">${icon}</span>
                 <span>
                   ${item.time ? `<span class="ov-item__time">${esc(item.time)}</span>` : ""}
                   <span class="ov-item__name">${esc(item.name)}</span>
+                  ${item.optional ? `<span class="tag-optional">備選</span>` : ""}
                 </span>
               </button>`;
     }).join("");

@@ -39,12 +39,13 @@ export function safeUrl(u) {
 
 /* 地圖搜尋字串，由準到不準依序取用：
      coords  "緯度,經度" —— 路邊攤、沒有店名的落點針只有這個找得到
+     search  只給地圖用、不顯示的搜尋字串
      address 店名或地址
      名稱 + 城市
    Google Maps 的 query / destination 參數兩者都吃座標，所以不用分開處理。
    回傳空字串代表這項不該顯示地圖按鈕 */
 export function mapQuery(item, city) {
   if (item.nomap) return "";
-  const q = (item.coords || item.address || `${item.name || ""} ${city || ""}`).trim();
+  const q = (item.coords || item.search || item.address || `${item.name || ""} ${city || ""}`).trim();
   return q ? encodeURIComponent(q) : "";
 }

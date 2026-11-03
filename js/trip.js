@@ -8,11 +8,16 @@
      type    圖示與分色，見 js/config.js 的 TYPES；不填會用關鍵字猜
      name    地點名稱（必填）
      address 店名或地址，會顯示在名稱下面一行
+     search  地圖搜尋用的字串，不顯示：名稱不適合直接拿去搜尋、又不想多一行地址時用
      coords  "緯度,經度"：路邊攤或沒有店名的落點針用這個，地圖連結優先吃它
      note    備註
      ig      Instagram 貼文連結，多一顆「📷 IG」按鈕
      video   影片連結（YouTube／Bilibili…），多一顆「▶ 影片」按鈕
+     icon    單獨指定這一項的圖示（例 "💚"），不填就照 type
      nomap   true = 沒有實際地點，不顯示地圖/導航按鈕
+     optional true = 備選（可去可不去），卡片變淡並標「備選」
+     stops   一組行程（欄位同上）：整組收成一張可展開的卡片，總表只佔一格
+             time 決定整組排在總表哪一格；可以再給 image 放一張照片（focus 同大圖），展開才載入
 
    每天的欄位：
      date / city / items
@@ -32,9 +37,10 @@ export const TRIP = {
       city: "曼谷",
       image: "images/day1.webp",
       items: [
-        { time: "19:00", type: "hotel", name: "住宿 check-in", nomap: true,
-          note: "飯店名稱待補" },
-        { time: "", type: "spa", name: "按摩", nomap: true,
+        { time: "16:45", type: "flight", name: "抵達曼谷", nomap: true },
+        { time: "19:00", type: "hotel", name: "住宿 check-in", nomap: true },
+        { time: "", type: "spa", name: "按摩", optional: true, address: "Thanomchai Aree Thai Massage",
+          coords: "13.7465435,100.5018732",
           note: "來得及再去" },
         { time: "晚餐", type: "food", name: "Khao Tom Jay Suay", address: "",
           note: "唐人街・跟熊去，小愛很愛的 local 熱炒店" },
@@ -53,8 +59,7 @@ export const TRIP = {
           note: "hen好吃的粿雜" },
         { time: "", type: "cafe", name: "偷情咖啡廳", address: "PAULETTE BKK",
           coords: "13.7495233,100.4980413",
-          ig: "https://www.instagram.com/p/Db2aKlOHROu/?img_index=5",
-          note: "「偷情咖啡廳」是暱稱，正式店名 PAULETTE BKK" },
+          ig: "https://www.instagram.com/p/Db2aKlOHROu/?img_index=5" },
         { time: "", type: "sight", name: "臥佛寺（擼貓）", address: "Wat Pho, Bangkok",
           ig: "https://www.instagram.com/p/C5p4Ys-BYAs/?img_index=1" },
         { time: "", type: "spa", name: "臥佛寺按摩學校",
@@ -80,9 +85,10 @@ export const TRIP = {
         { time: "", type: "hotel", name: "回住宿點放東西休息", nomap: true },
         { time: "傍晚", type: "sight", name: "金山寺看夕陽", address: "Wat Saket, Bangkok",
           note: "找 som" },
-        { time: "晚餐", type: "food", name: "拉麵（熊想吃的）", address: "372 Ramen And Sake",
-          coords: "13.7632489,100.5002599" },
-        { time: "", type: "bar", name: "Ku Bar", address: "Ku Bar, Bangkok",
+        { time: "晚餐", type: "food", name: "372 Ramen And Sake",
+          coords: "13.7632489,100.5002599",
+          note: "熊想吃的拉麵" },
+        { time: "", type: "bar", name: "Ku Bar", optional: true, address: "Ku Bar, Bangkok",
           note: "看要不要喝" },
         { time: "", type: "hotel", name: "回住宿點", nomap: true },
       ],
@@ -99,7 +105,7 @@ export const TRIP = {
           address: "ก๋วยจั๊บน้ำใสตรอกวัดพระพิเรนทร์ ฝั่งวรจักร (เจ๊เกียง)",
           coords: "13.7480824,100.5062635",
           note: "最好吃粿雜！" },
-        { time: "", type: "cafe", name: "Siam Subway", address: "Siam Subway, Bangkok",
+        { time: "", type: "cafe", name: "Siam Subway", optional: true, address: "Siam Subway, Bangkok",
           note: "喝抹茶" },
         { time: "12:00", type: "hotel", name: "check out", nomap: true },
         { time: "", type: "train", name: "坐 MRT 去 Taipan Hotel", nomap: true },
@@ -133,23 +139,41 @@ export const TRIP = {
         { time: "07:00", type: "food", name: "BARTELS", address: "Bartels, Bangkok",
           note: "酸種麵包吃早餐" },
         { time: "", type: "cafe", name: "Waraha Café", address: "",
-          note: "英法的咖啡廳" },
+          note: "英法的咖啡廳・巷子比較小，可能要摩托車過去，要走到 Asok Montri 路坐摩托車比較好" },
         { time: "12:00", type: "hotel", name: "check out", nomap: true,
-          note: "12 點前" },
+          note: "12 點前・直接帶行李離開會比較順，但如果行李太重不想拿著移動，可以寄放再回來拿" },
+        { time: "", type: "train", name: "坐 BTS 去 Phrom Phong",
+          address: "Phrom Phong BTS Station, Bangkok",
+          note: "面交寫真集" },
+        { time: "午餐", type: "food", name: "Kanori Hand Roll Bar (EmQuartier)",
+          coords: "13.7314398,100.5697312",
+          note: "潘薩最愛手捲" },
         { time: "", type: "train", name: "坐 MRT 去 Ladprao", nomap: true,
           note: "約 30 分鐘" },
-        { time: "", type: "hotel", name: "The Quarter Ladprao by UHG check in",
-          address: "The Quarter Ladprao by UHG, Bangkok" },
-        { time: "", type: "train", name: "坐 BTS 到 Ari", address: "Ari BTS Station, Bangkok",
-          note: "開始潘薩之旅" },
-        { time: "午餐", type: "food", name: "Poet House Cafe", address: "" },
+        { time: "14:00", type: "hotel", name: "The Quarter Ladprao by UHG check in",
+          search: "The Quarter Ladprao by UHG, Bangkok" },
+        { time: "下午", type: "tour", name: "潘薩踩點之旅", icon: "💚",
+          image: "images/pansa.webp",
+          focus: "10%",        /* 直式照：保住哈士奇和潘薩的臉 */
+          stops: [
+          { time: "", type: "train", name: "坐 BTS 到 Ari", address: "Ari BTS Station, Bangkok" },
         { time: "下午茶", type: "cafe", name: "Dog In Town Ari", address: "",
           ig: "https://www.instagram.com/p/DerD8fCk1tL/?img_index=1" },
-        { time: "", type: "other", name: "小愛踩點之旅", nomap: true },
-        { time: "晚餐", type: "food", name: "The Camping Ground", address: "" },
+        ] },
+        { time: "晚餐", type: "tour", name: "小愛踩點之旅", icon: "💖",
+          image: "images/love.webp",
+          focus: "35%",        /* 直式照：保住臉和上半身 */
+          stops: [
+        { time: "晚餐", type: "food", name: "The Camping Ground", address: "",
+          ig: "https://www.instagram.com/p/DUSxXc-ktJq/?img_index=1",
+          note: "廣場好像有 Mu Kratha" },
         { time: "點心", type: "food", name: "香蕉煎餅", address: "Roti",
           coords: "13.7901267,100.5460538",
           note: "The Camping Ground 旁邊" },
+        ] },
+        { time: "22:00", type: "shop", name: "BigC Supercenter Sapankwai", optional: true,
+          coords: "13.7913638,100.5495483",
+          note: "逛 Big c 補貨" },
       ],
     },
 

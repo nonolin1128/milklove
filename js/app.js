@@ -88,11 +88,13 @@ function openOverview() {
 /* 捲到那天的第 j 項（沒給 j 就回頂部），閃一下讓眼睛找得到 */
 function showItem(i, j) {
   const scroller = dayEls[i].querySelector(".day__scroll");
-  const item = scroller.querySelectorAll(".item")[j];
+  const item = scroller.querySelectorAll(".items > .item")[j];
   if (!item) {
     scroller.scrollTop = 0;
     return;
   }
+  const group = item.querySelector("details");
+  if (group) group.open = true;       /* 一組行程要先展開，高度才算得準 */
   const bar = scroller.querySelector(".daybar");
   scroller.scrollTop += item.getBoundingClientRect().top
     - scroller.getBoundingClientRect().top - bar.offsetHeight - 10;

@@ -21,6 +21,7 @@ export const TYPES = {
   shop:   { icon: "🛍", group: "other" },
   spa:    { icon: "💆", group: "other" },
   show:   { icon: "🎟",  group: "other" },
+  tour:   { icon: "🌸", group: "other" },
   other:  { icon: "📍", group: "other" },
 };
 

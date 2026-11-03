@@ -94,6 +94,67 @@
   .act:hover { background: var(--accent); }
 }
 
+/* 一組行程：可展開的卡片，裡面的每一站不再有自己的卡片外框 */
+.group__head {
+  min-height: var(--tap);
+  margin: -8px 0;
+  cursor: pointer;
+  list-style: none;
+}
+.group__head::-webkit-details-marker { display: none; }
+.group__head::after {
+  content: "▾";
+  margin-left: 4px;
+  transition: transform .15s;
+}
+.group[open] .group__head::after { transform: rotate(180deg); }
+.group__count {
+  margin-left: auto;
+  font-size: var(--fs-addr);
+  font-weight: 500;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.group__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-top: 16px;
+  border-radius: var(--radius-note);
+  object-fit: cover;
+}
+.group__stops { margin-top: 8px; }
+.group__stops .item {
+  grid-template-columns: 1fr;
+  gap: 4px;
+  padding: 14px 0 6px;
+  border-top: 1px solid var(--hairline);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.group__stops .item__time:empty { display: none; }
+.group__stops .item__time { padding-top: 0; }
+
+/* 備選（可去可不去）：卡片變淡、改虛線框，文字維持 --ink 才讀得清楚 */
+.item--optional {
+  background: #FFFFFF80;
+  box-shadow: none;
+  outline: 1.5px dashed #4A443F33;
+  outline-offset: -1.5px;
+}
+.item--optional .item__name { font-weight: 500; }
+.tag-optional {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border: 1px solid #4A443F33;
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
 /* 從總表跳過來時閃一下，標出是哪一項 */
 .item--flash { animation: item-flash 1.2s ease-out; }
 @keyframes item-flash {
@@ -314,6 +375,13 @@
   background: var(--rose);
   font-weight: 700;
 }
+.ov-item--optional {
+  background: none;
+  box-shadow: none;
+  outline: 1.5px dashed #4A443F33;
+  outline-offset: -1.5px;
+}
+.ov-item--optional .tag-optional { display: inline-block; margin-top: 3px; }
 .ov-item__icon { font-size: 13px; line-height: 1.35; }
 .ov-item__time {
   display: block;
