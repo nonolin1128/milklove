@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   components.css ── 行程卡、地圖按鈕、底部圓點、桌機箭頭、總表、清單、浮動小狗
+   components.css ── 行程卡、地圖按鈕、底部日期列、桌機箭頭、總表、清單、浮動小狗
    ═══════════════════════════════════════════════════════════ */
 
 /* ── 行程列表 ──────────────────────────── */
@@ -158,35 +158,51 @@
   .item--flash { animation: none; }
 }
 
-/* ── 底部圓點 ──────────────────────────── */
-.dots {
+/* ── 底部日期列 ────────────────────────── */
+/* 寬螢幕時左右內距撐開，日期格才不會拉得和視窗一樣寬 */
+.tabs {
   position: fixed;
-  left: 50%;
-  bottom: calc(14px + env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 20;
   display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 14px;
-  border-radius: var(--radius-pill);
-  transform: translateX(-50%);
-  background: #FFFBF7d9;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: var(--shadow-float);
+  gap: 1px;
+  padding: 0 max(0px, calc((100% - var(--content-max)) / 2)) env(safe-area-inset-bottom);
+  background: var(--cream);
+  border-top: 1px solid var(--hairline);
 }
-.dot {
-  width: 9px; height: 9px;
+.tab {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: var(--tabs-height);
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: #4A443F29;
+  background: var(--muvmuv-wash);
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
   cursor: pointer;
-  transition: width .2s, background .2s;
+  transition: background .2s;
 }
-.dot[aria-current="true"] {
-  width: 24px;
-  border-radius: var(--radius-pill);
+.tab[aria-current="true"] {
+  background: var(--muvmuv);
+  font-weight: 800;
+}
+.tab__date { display: block; font-size: 14px; font-weight: 700; }
+.tab[aria-current="true"] .tab__date { font-weight: 800; }
+.tab__week { display: block; font-size: 12px; }
+.tab__hearts { margin-left: 3px; font-size: 11px; }
+.tab__today {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muvmuv-deep);
 }
 
 /* ── 桌機左右箭頭（手機不顯示，用手滑） ── */

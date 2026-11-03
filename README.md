@@ -19,13 +19,13 @@ css/
   theme.css             ← 設計設定檔：顏色、字體、字級、間距、圓角、陰影
   base.css              reset、底色、三色柔光背景
   layout.css            一天一頁的骨架：橫向日卡、頂部大圖、黏性日期條
-  components.css        行程卡、地圖按鈕、底部圓點、桌機箭頭、總表、清單、浮動小狗
+  components.css        行程卡、地圖按鈕、底部日期列、桌機箭頭、總表、清單、浮動小狗
 js/
   trip.js               ← 行程資料：改行程只動這個檔案
   config.js             圖示、分色規則、每天輪替的主題色
   util.js               跳脫、日期格式、Google Maps 搜尋字串
   render.js             把資料畫成 HTML（純函式）
-  app.js                掛上畫面、滑動、圓點、鍵盤、hash、總表、清單、浮動小狗、離線
+  app.js                掛上畫面、滑動、日期列、鍵盤、hash、總表、清單、浮動小狗、離線
 images/                 每天的頂部大圖（day1.webp…）、照片、圖示
 manifest.webmanifest    App 名稱、圖示：加到主畫面用
 sw.js                   Service Worker：斷網也能打開。新增圖片要更新它的 PRECACHE

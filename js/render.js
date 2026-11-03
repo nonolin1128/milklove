@@ -117,6 +117,21 @@ export function renderDay(day, i) {
     </section>`;
 }
 
+/* 底部日期列：一天一格，主要活動日多一組愛心，今天多一個小圓點 */
+export function renderTabs(days) {
+  const today = todayISO();
+  return days.map((day, i) => {
+    const { label, md, week, iso } = fmtDate(day.date);
+    const isToday = iso === today;
+    return `
+    <button class="tab" data-i="${i}" aria-label="Day ${i + 1} ${label}${isToday ? " 今天" : ""}">
+      ${isToday ? `<span class="tab__today" aria-hidden="true"></span>` : ""}
+      <span class="tab__date">${md}</span>
+      <span class="tab__week">${week}${day.highlight ? `<span class="tab__hearts" aria-hidden="true">💚💖</span>` : ""}</span>
+    </button>`;
+  }).join("");
+}
+
 /* 總表：直欄是每一天、橫列是上午／下午／晚上。每格都能點，跳到那天的詳細頁
    類型看圖示就夠了，所以總表不分色；只有 highlight 的主要活動日用玫瑰色 */
 export function renderOverview(days) {

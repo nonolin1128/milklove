@@ -9,14 +9,17 @@ export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ENTITIES[c]
 
 const WEEK = ["日", "一", "二", "三", "四", "五", "六"];
 
-/* "2026-11-11" → { label: "11/11 (三)", iso: "2026-11-11" }
+/* "2026-11-11" → { label: "11/11 (三)", md: "11/11", week: "三", iso: "2026-11-11" }
    用 new Date(y, m-1, d) 建本地時間，避免 UTC 時區把日期差一天 */
 export function fmtDate(iso) {
   const [y, m, d] = String(iso).split("-").map(Number);
-  if (!y || !m || !d) return { label: String(iso), iso: String(iso) };
+  if (!y || !m || !d) return { label: String(iso), md: String(iso), week: "", iso: String(iso) };
   const dt = new Date(y, m - 1, d);
+  const week = WEEK[dt.getDay()];
   return {
-    label: `${m}/${d} (${WEEK[dt.getDay()]})`,
+    label: `${m}/${d} (${week})`,
+    md: `${m}/${d}`,
+    week,
     iso: `${y}-${pad(m)}-${pad(d)}`,
   };
 }
