@@ -74,6 +74,9 @@
   line-height: 1;
 }
 .hero__area {
+  display: flex;
+  align-items: center;
+  gap: 12px;                        /* 要大於標籤的柔光，才不會壓到區域名稱 */
   font-size: var(--fs-date);
   font-weight: 600;
 }

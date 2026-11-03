@@ -99,8 +99,10 @@ export function renderDay(day, i) {
           ${hero}
           <div class="hero__text">
             <div class="hero__day">DAY ${n}</div>
-            ${day.area ? `<div class="hero__area">${esc(day.area)}</div>` : ""}
-            ${day.badge ? `<span class="hero__badge">${esc(day.badge)}</span>` : ""}
+            <div class="hero__area">
+              ${day.area ? `<span>${esc(day.area)}</span>` : ""}
+              ${day.badge ? `<span class="hero__badge">${esc(day.badge)}</span>` : ""}
+            </div>
           </div>
         </header>
         <div class="daybar">
