@@ -7,7 +7,6 @@ import { TYPES, TINT, ACCENTS, SLOTS, guessType, slotsFor } from "./config.js";
 import { esc, fmtDate, todayISO, mapQuery, safeUrl } from "./util.js";
 
 const MAP_SEARCH = "https://www.google.com/maps/search/?api=1&query=";
-const MAP_DIR    = "https://www.google.com/maps/dir/?api=1&destination=";
 
 /* 項目的圖示與分色：有填 type 就用，沒填就照名稱猜；icon 可以單獨覆寫圖示 */
 function typeOf(item) {
@@ -35,30 +34,33 @@ function renderGroup(item, city) {
       </li>`;
 }
 
+/* 地址和名字一樣就不用再顯示一次（"Bartels, Bangkok" 對 "BARTELS"） */
+function showAddress(item) {
+  if (!item.address) return false;
+  const place = item.address.replace(/,\s*Bangkok$/i, "");
+  return place.toLowerCase() !== String(item.name).toLowerCase();
+}
+
+/* 名字右邊的圖示連結：有地點就有地圖，有連結就多一個。全空就不出現 */
+function renderLinks(item, city) {
+  const link = (href, label, icon) =>
+    `<a class="item-link" target="_blank" rel="noopener" href="${href}" aria-label="${label}">${icon}</a>`;
+
+  const links = [];
+  const q = mapQuery(item, city);
+  if (q) links.push(link(`${MAP_SEARCH}${q}`, `在地圖看 ${esc(item.name)}`, "📍"));
+  const ig = safeUrl(item.ig);
+  if (ig) links.push(link(esc(ig), `${esc(item.name)} 的 Instagram`, "📷"));
+  const video = safeUrl(item.video);
+  if (video) links.push(link(esc(video), `${esc(item.name)} 的影片`, "▶"));
+
+  return links.length ? `<div class="item-links">${links.join("")}</div>` : "";
+}
+
 /* 一個行程項目 */
 export function renderItem(item, city) {
   if (item.stops) return renderGroup(item, city);
   const { icon, group } = typeOf(item);
-  const q = mapQuery(item, city);
-
-  /* 按鈕列：有地點就給地圖／導航，有連結就多一顆。全空則整列不出現 */
-  const btn = (href, label, cls = "act") =>
-    `<a class="${cls}" target="_blank" rel="noopener" href="${href}">${label}</a>`;
-
-  const btns = [];
-  if (q) {
-    btns.push(btn(`${MAP_SEARCH}${q}`, "📍 地圖"));
-    btns.push(btn(`${MAP_DIR}${q}`, "🧭 導航", "act act--primary"));
-  }
-  const ig = safeUrl(item.ig);
-  if (ig) btns.push(btn(esc(ig), "📷 IG"));
-  const video = safeUrl(item.video);
-  if (video) btns.push(btn(esc(video), "▶ 影片"));
-
-  const acts = btns.length
-    ? `
-        <div class="acts">${btns.join("")}</div>`
-    : "";
 
   return `
       <li class="item${item.optional ? " item--optional" : ""}">
@@ -68,10 +70,10 @@ export function renderItem(item, city) {
             <span class="item__icon" style="--tint:${TINT[group]}" aria-hidden="true">${icon}</span>
             <span>${esc(item.name)}</span>
             ${item.optional ? `<span class="tag-optional">備選</span>` : ""}
+            ${renderLinks(item, city)}
           </div>
-          ${item.address ? `<div class="item__addr">${esc(item.address)}</div>` : ""}
+          ${showAddress(item) ? `<div class="item__addr">${esc(item.address)}</div>` : ""}
           ${item.note ? `<div class="item__note">${esc(item.note)}</div>` : ""}
-          ${acts}
         </div>
       </li>`;
 }
@@ -181,7 +183,6 @@ export function renderOverview(days) {
 /* 清單跳窗：sections 是合併過手機增刪的結果，checked 是已打勾的名字（Set） */
 export function renderChecklist(sections, checked) {
   const row = (item, title) => {
-    const q = mapQuery(item, "");
     return `
           <li class="check">
             <div class="check__row">
@@ -189,13 +190,10 @@ export function renderChecklist(sections, checked) {
                 <input type="checkbox" data-name="${esc(item.name)}"${checked.has(item.name) ? " checked" : ""}>
                 <span>${esc(item.name)}</span>
               </label>
+              ${item.address ? renderLinks(item, "") : ""}
               <button class="check__remove" type="button" data-remove="${esc(item.name)}" data-section="${esc(title)}"
                       aria-label="刪除 ${esc(item.name)}">✕</button>
             </div>
-            ${item.address && q ? `<div class="acts">
-              <a class="act" target="_blank" rel="noopener" href="${MAP_SEARCH}${q}">📍 地圖</a>
-              <a class="act act--primary" target="_blank" rel="noopener" href="${MAP_DIR}${q}">🧭 導航</a>
-            </div>` : ""}
           </li>`;
   };
 

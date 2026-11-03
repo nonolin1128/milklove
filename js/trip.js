@@ -7,14 +7,14 @@
              總表靠它分上午／下午／晚上，留空的項目跟著上一項
      type    圖示與分色，見 js/config.js 的 TYPES；不填會用關鍵字猜
      name    地點名稱（必填）
-     address 店名或地址，會顯示在名稱下面一行
+     address 店名或地址，會顯示在名稱下面一行（和名稱相同就不顯示）
      search  地圖搜尋用的字串，不顯示：名稱不適合直接拿去搜尋、又不想多一行地址時用
      coords  "緯度,經度"：路邊攤或沒有店名的落點針用這個，地圖連結優先吃它
      note    備註
-     ig      Instagram 貼文連結，多一顆「📷 IG」按鈕
-     video   影片連結（YouTube／Bilibili…），多一顆「▶ 影片」按鈕
+     ig      Instagram 貼文連結，多一個 📷 圖示
+     video   影片連結（YouTube／Bilibili…），多一個 ▶ 圖示
      icon    單獨指定這一項的圖示（例 "💚"），不填就照 type
-     nomap   true = 沒有實際地點，不顯示地圖/導航按鈕
+     nomap   true = 沒有實際地點，不顯示地圖圖示
      optional true = 備選（可去可不去），卡片變淡並標「備選」
      stops   一組行程（欄位同上）：整組收成一張可展開的卡片，總表只佔一格
              time 決定整組排在總表哪一格；可以再給 image 放一張照片（focus 同大圖），展開才載入
@@ -29,7 +29,7 @@
      badge     大圖上的小標籤
 
    checklist（在最下面）：底部「清單」按鈕的內容
-     每區 icon / title / items；項目的 name、address 同上，有 address 就有地圖按鈕
+     每區 icon / title / items；項目的 name、address 同上，有 address 就有地圖圖示
      打勾記錄用 name 當鑰匙，所以改名字後要重勾
      這裡是預設內容；手機上的新增、刪除和打勾另外存在 localStorage，不會改到這裡
    ═══════════════════════════════════════════════════════════ */

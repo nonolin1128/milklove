@@ -46,7 +46,7 @@
   --fs-name: 16px;                      /* 地點名稱 */
   --fs-addr: 12.5px;                    /* 地址 */
   --fs-note: 13px;                      /* 備註 */
-  --fs-act:  13px;                      /* 地圖/導航按鈕 */
+  --fs-act:  13px;                      /* 清單的新增按鈕 */
   --fs-ov-title: 18px;                  /* 總表標題 */
   --fs-ov-head:  12.5px;                /* 總表每天的標題格 */
   --fs-ov-time:  11px;                  /* 總表項目的時間 */
